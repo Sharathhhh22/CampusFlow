@@ -91,16 +91,21 @@ export const CreateSessionPage = () => {
         room: 'Hall B-204'
       });
 
-      const sessionObj = res.data?.session || res.data || res.session;
+      const sessionObj = res.data?.session || res.data?.data?.session || res.data?.data || res.data || res.session;
       const targetSessionId = sessionObj?.id || 'ses-102';
 
       if (res.success || sessionObj) {
-        navigate(`/faculty/sessions/${targetSessionId}`);
+        navigate(`/faculty/sessions/${targetSessionId}`, {
+          state: {
+            session: sessionObj,
+            autoProject: true
+          }
+        });
       } else {
         setError(res.message || 'Failed to initialize session');
       }
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Failed to create attendance session');
+      setError(err.response?.data?.error?.message || err.response?.data?.message || err.message || 'Failed to create attendance session');
     } finally {
       setLoading(false);
     }

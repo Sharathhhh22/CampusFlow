@@ -32,9 +32,12 @@ api.interceptors.request.use((config) => {
 const STORAGE_KEY = 'campusflow_client_store_v2';
 
 function getStore() {
+  let store = null;
   const existing = localStorage.getItem(STORAGE_KEY);
   if (existing) {
-    try { return JSON.parse(existing); } catch (e) {}
+    try {
+      store = JSON.parse(existing);
+    } catch (e) {}
   }
 
   const initialStore = {
@@ -44,35 +47,81 @@ function getStore() {
       { id: 'usr-admin-01', role: 'admin', full_name: 'Dr. Sarah Jenkins', name: 'Dr. Sarah Jenkins', email: 'admin.jenkins@apex.edu', title: 'Dean of Academic Affairs', department: 'Academic Affairs', institution_name: 'Apex Institute of Technology' }
     ],
     classes: [
-      { id: 'cls-cs301', code: 'CS-301', name: 'Algorithms & Data Structures', semester: 5, enrolled_count: 64, room: 'Hall B-204', faculty_id: 'usr-faculty-01', faculty_name: 'Prof. Marcus Vance' },
-      { id: 'cls-cs302', code: 'CS-302', name: 'Distributed Systems & Cloud', semester: 5, enrolled_count: 58, room: 'Lab 3', faculty_id: 'usr-faculty-01', faculty_name: 'Prof. Marcus Vance' },
-      { id: 'cls-cs303', code: 'CS-303', name: 'Database Management Systems', semester: 4, enrolled_count: 62, room: 'Hall A-101', faculty_id: 'usr-faculty-01', faculty_name: 'Prof. Marcus Vance' }
+      {
+        id: 'cls-cs301',
+        code: 'CS-301',
+        name: 'Algorithms & Data Structures',
+        semester: 5,
+        enrolled_count: 64,
+        room: 'Hall B-204',
+        faculty_id: 'usr-faculty-01',
+        faculty_name: 'Prof. Marcus Vance',
+        subjects: [
+          { id: 'sub-01', code: 'CS-301', name: 'Algorithms & Data Structures' },
+          { id: 'sub-02', code: 'CS-302', name: 'Distributed Systems & Cloud Computing' }
+        ]
+      },
+      {
+        id: 'cls-cs302',
+        code: 'CS-302',
+        name: 'Distributed Systems & Cloud',
+        semester: 5,
+        enrolled_count: 58,
+        room: 'Lab 3',
+        faculty_id: 'usr-faculty-01',
+        faculty_name: 'Prof. Marcus Vance',
+        subjects: [
+          { id: 'sub-02', code: 'CS-302', name: 'Distributed Systems & Cloud Computing' }
+        ]
+      },
+      {
+        id: 'cls-cs303',
+        code: 'CS-303',
+        name: 'Database Management Systems',
+        semester: 4,
+        enrolled_count: 62,
+        room: 'Hall A-101',
+        faculty_id: 'usr-faculty-01',
+        faculty_name: 'Prof. Marcus Vance',
+        subjects: [
+          { id: 'sub-03', code: 'CS-303', name: 'Database Management Systems' }
+        ]
+      }
     ],
     sessions: [
-      {
-        id: 'ses-101',
-        class_id: 'cls-cs301',
-        classId: 'cls-cs301',
-        className: 'Algorithms & Data Structures (CS-301)',
-        faculty_id: 'usr-faculty-01',
-        start_time: new Date(Date.now() - 3600000).toISOString(),
-        expires_at: new Date(Date.now() - 2700000).toISOString(),
-        status: 'closed',
-        rawToken: 'DEMO_TOKEN_101',
-        totalAttended: 59,
-        room: 'Hall B-204'
-      },
       {
         id: 'ses-102',
         class_id: 'cls-cs301',
         classId: 'cls-cs301',
         className: 'Algorithms & Data Structures (CS-301)',
+        subject_id: 'sub-01',
+        subject_name: 'Algorithms & Data Structures',
+        subject_code: 'CS-301',
         faculty_id: 'usr-faculty-01',
-        start_time: new Date(Date.now() - 600000).toISOString(),
-        expires_at: new Date(Date.now() + 1800000).toISOString(),
+        starts_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 30 * 60000).toISOString(),
         status: 'active',
         rawToken: 'ACTIVE_TOKEN_CS301',
+        token: 'ACTIVE_TOKEN_CS301',
+        token_hash: 'ACTIVE_TOKEN_CS301',
         totalAttended: 42,
+        room: 'Hall B-204'
+      },
+      {
+        id: 'ses-101',
+        class_id: 'cls-cs301',
+        classId: 'cls-cs301',
+        className: 'Algorithms & Data Structures (CS-301)',
+        subject_id: 'sub-01',
+        subject_name: 'Algorithms & Data Structures',
+        subject_code: 'CS-301',
+        faculty_id: 'usr-faculty-01',
+        starts_at: new Date(Date.now() - 3600000).toISOString(),
+        expires_at: new Date(Date.now() - 2700000).toISOString(),
+        status: 'closed',
+        rawToken: 'DEMO_TOKEN_101',
+        token: 'DEMO_TOKEN_101',
+        totalAttended: 59,
         room: 'Hall B-204'
       }
     ],
@@ -377,8 +426,61 @@ function getStore() {
     ]
   };
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(initialStore));
-  return initialStore;
+  // If store is null or invalid, use initialStore
+  if (!store || typeof store !== 'object') {
+    store = { ...initialStore };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    return store;
+  }
+
+  // Ensure all collections from initialStore exist
+  let changed = false;
+  for (const key of Object.keys(initialStore)) {
+    if (!store[key] || !Array.isArray(store[key]) || store[key].length === 0) {
+      store[key] = initialStore[key];
+      changed = true;
+    }
+  }
+
+  // Ensure active sessions have valid future expiry date
+  if (Array.isArray(store.sessions)) {
+    const active = store.sessions.find(s => s.status === 'active');
+    if (active) {
+      const exp = new Date(active.expires_at || active.expiresAt).getTime();
+      if (isNaN(exp) || exp < Date.now()) {
+        active.expires_at = new Date(Date.now() + 30 * 60000).toISOString();
+        active.expiresAt = active.expires_at;
+        changed = true;
+      }
+    } else {
+      const newActive = {
+        id: 'ses-' + Date.now(),
+        class_id: 'cls-cs301',
+        classId: 'cls-cs301',
+        className: 'Algorithms & Data Structures (CS-301)',
+        subject_id: 'sub-01',
+        subject_name: 'Algorithms & Data Structures',
+        subject_code: 'CS-301',
+        faculty_id: 'usr-faculty-01',
+        starts_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 30 * 60000).toISOString(),
+        status: 'active',
+        rawToken: 'ACTIVE_TOKEN_CS301',
+        token: 'ACTIVE_TOKEN_CS301',
+        token_hash: 'ACTIVE_TOKEN_CS301',
+        totalAttended: 12,
+        room: 'Hall B-204'
+      };
+      store.sessions.unshift(newActive);
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  }
+
+  return store;
 }
 
 function saveStore(store) {
@@ -577,7 +679,16 @@ export const sessionApi = {
     }
   ),
   create: (data) => withFallback(
-    () => api.post('/sessions', data).then(r => r.data),
+    () => api.post('/sessions', data).then(r => {
+      const created = r.data?.session || r.data?.data?.session || r.data?.data || r.data;
+      if (created && created.id) {
+        const store = getStore();
+        store.sessions = store.sessions || [];
+        store.sessions = [created, ...store.sessions.filter(s => s.id !== created.id)];
+        saveStore(store);
+      }
+      return r.data;
+    }),
     () => {
       const store = getStore();
       const rawToken = 'CF_QR_' + Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -585,16 +696,18 @@ export const sessionApi = {
       const now = new Date();
       const expiresAt = new Date(now.getTime() + duration * 60000);
 
-      const targetClass = store.classes.find(c => c.id === (data.class_id || data.classId)) || store.classes[0];
+      const targetClass = (store.classes && store.classes.find(c => c.id === (data.class_id || data.classId)))
+        || (store.classes && store.classes[0])
+        || { id: 'cls-cs301', name: 'Algorithms & Data Structures', code: 'CS-301' };
 
       const newSession = {
         id: 'ses-' + Date.now(),
         classId: targetClass.id,
         class_id: targetClass.id,
-        className: targetClass.name + ' (' + targetClass.code + ')',
+        className: (targetClass.name || 'Class') + ' (' + (targetClass.code || 'CS-301') + ')',
         subject_id: data.subject_id || data.subjectId || 'sub-01',
-        subject_name: targetClass.name,
-        subject_code: targetClass.code,
+        subject_name: targetClass.name || 'Algorithms & Data Structures',
+        subject_code: targetClass.code || 'CS-301',
         faculty_id: 'usr-faculty-01',
         facultyId: 'usr-faculty-01',
         start_time: now.toISOString(),
@@ -610,6 +723,7 @@ export const sessionApi = {
         totalAttended: 0,
         room: data.room || 'Hall B-204'
       };
+      store.sessions = store.sessions || [];
       store.sessions.unshift(newSession);
       saveStore(store);
       return {
@@ -628,16 +742,43 @@ export const sessionApi = {
     }
   ),
   getById: (id) => withFallback(
-    () => api.get(`/sessions/${id}`).then(r => r.data),
+    () => api.get(`/sessions/${id}`).then(r => {
+      const serverData = r.data?.data || r.data?.session || r.data;
+      if (serverData) {
+        const store = getStore();
+        const local = (store.sessions || []).find(s => s.id === id);
+        if (local && (local.rawToken || local.token) && !serverData.rawToken && !serverData.token) {
+          serverData.token = local.token || local.rawToken;
+          serverData.rawToken = local.rawToken || local.token;
+        }
+      }
+      return r.data;
+    }),
     () => {
-      const s = getStore().sessions.find(x => x.id === id) || getStore().sessions[0];
+      const store = getStore();
+      const sessions = store.sessions || [];
+      const s = sessions.find(x => x.id === id) || sessions.find(x => x.status === 'active') || sessions[0] || {
+        id: id || 'ses-102',
+        className: 'Algorithms & Data Structures (CS-301)',
+        subject_name: 'Algorithms & Data Structures',
+        subject_code: 'CS-301',
+        section: 'Section A',
+        room: 'Hall B-204',
+        status: 'active',
+        starts_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 15 * 60000).toISOString(),
+        rawToken: 'ACTIVE_TOKEN_CS301',
+        token: 'ACTIVE_TOKEN_CS301',
+        totalAttended: 0
+      };
       const token = s.rawToken || s.token || 'ACTIVE_TOKEN_CS301';
       const completeSession = {
         ...s,
         token,
         rawToken: token,
-        token_hash: token,
-        tokenHash: token,
+        token_hash: s.token_hash || token,
+        tokenHash: s.tokenHash || token,
+        status: s.status || 'active',
         starts_at: s.starts_at || s.start_time || s.startTime || new Date().toISOString(),
         expires_at: s.expires_at || s.expiresAt || new Date(Date.now() + 15 * 60000).toISOString()
       };

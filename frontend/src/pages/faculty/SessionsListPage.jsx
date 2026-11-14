@@ -46,16 +46,16 @@ export const SessionsListPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs transition-colors">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Attendance Sessions</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Attendance Sessions</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Create, project, and monitor cryptographic QR attendance sessions for your classes.
           </p>
         </div>
         <Link
           to="/faculty/sessions/create"
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-bold transition shadow-sm shadow-sky-200"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-bold transition shadow-sm shadow-sky-200 dark:shadow-none"
         >
           <Plus className="w-4 h-4" /> Create New Session
         </Link>
@@ -75,10 +75,10 @@ export const SessionsListPage = () => {
           }
         />
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden transition-colors">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/80 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 <tr>
                   <th className="py-3 px-4">Subject & Code</th>
                   <th className="py-3 px-4">Class Section</th>
@@ -89,25 +89,25 @@ export const SessionsListPage = () => {
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
                 {sessions.map((s) => (
-                  <tr key={s.id} className="hover:bg-slate-50/70 transition">
-                    <td className="py-3.5 px-4 font-bold text-slate-900">
-                      <div>{s.subject_name}</div>
-                      <div className="text-xs font-normal text-slate-400">{s.subject_code}</div>
+                  <tr key={s.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition">
+                    <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-white">
+                      <div>{s.subject_name || s.className}</div>
+                      <div className="text-xs font-normal text-slate-400 dark:text-slate-500">{s.subject_code || s.code}</div>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-700">
-                      {s.class_name} • {s.section}
+                    <td className="py-3.5 px-4 text-slate-700 dark:text-slate-300">
+                      {s.class_name || s.className} • {s.section || 'Section A'}
                     </td>
-                    <td className="py-3.5 px-4 text-slate-600">
-                      {s.session_date}
+                    <td className="py-3.5 px-4 text-slate-600 dark:text-slate-400">
+                      {s.session_date || (s.starts_at ? new Date(s.starts_at).toLocaleDateString() : 'Today')}
                     </td>
-                    <td className="py-3.5 px-4 text-xs text-slate-500">
-                      {new Date(s.starts_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(s.expires_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <td className="py-3.5 px-4 text-xs text-slate-500 dark:text-slate-400">
+                      {new Date(s.starts_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(s.expires_at || Date.now() + 15 * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-slate-800">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-lg text-xs">
-                        <Users className="w-3.5 h-3.5 text-slate-500" /> {s.attendance_count}
+                    <td className="py-3.5 px-4 font-bold text-slate-800 dark:text-slate-200">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs">
+                        <Users className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" /> {s.attendance_count !== undefined ? s.attendance_count : (s.totalAttended || 0)}
                       </span>
                     </td>
                     <td className="py-3.5 px-4">
@@ -117,14 +117,14 @@ export const SessionsListPage = () => {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           to={`/faculty/sessions/${s.id}`}
-                          className="px-3 py-1.5 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded-lg text-xs font-bold transition flex items-center gap-1"
+                          className="px-3 py-1.5 bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900 rounded-lg text-xs font-bold transition flex items-center gap-1 border border-sky-200 dark:border-sky-800"
                         >
                           <Eye className="w-3.5 h-3.5" /> Monitor
                         </Link>
                         {s.status === 'active' && (
                           <button
                             onClick={() => handleCloseSession(s.id)}
-                            className="px-3 py-1.5 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg text-xs font-bold transition flex items-center gap-1"
+                            className="px-3 py-1.5 bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900 rounded-lg text-xs font-bold transition flex items-center gap-1 border border-rose-200 dark:border-rose-800"
                           >
                             <XCircle className="w-3.5 h-3.5" /> Close
                           </button>

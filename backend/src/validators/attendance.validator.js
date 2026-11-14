@@ -10,7 +10,7 @@ export const createSessionSchema = z.object({
 export const scanAttendanceSchema = z.object({
   session_id: z.string().min(1, 'Valid Session ID is required'),
   token: z.string().min(1, 'QR Token is required'),
-  device_info: z.string().max(255).optional()
+  device_info: z.string().max(1000).optional()
 });
 
 export const reportIssueSchema = z.object({

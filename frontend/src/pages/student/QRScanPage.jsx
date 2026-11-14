@@ -255,7 +255,7 @@ export const QRScanPage = () => {
       const res = await attendanceApi.scan({
         session_id: sessionId,
         token: token,
-        device_info: navigator.userAgent
+        device_info: (navigator.userAgent || 'Web Browser').slice(0, 150)
       });
 
       if (res.success) {
@@ -264,7 +264,8 @@ export const QRScanPage = () => {
         setScanError(res.message || 'Verification could not be completed.');
       }
     } catch (err) {
-      setScanError(err.response?.data?.message || err.message || 'Failed to record check-in.');
+      const errorMsg = err.response?.data?.error?.message || err.response?.data?.message || err.message || 'Failed to record check-in.';
+      setScanError(errorMsg);
     } finally {
       setSubmitting(false);
     }

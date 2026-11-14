@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { ThemeToggle } from '../contexts/ThemeContext';
+import { FloatingCopilotWidget } from '../components/common/FloatingCopilotWidget';
 import {
   QrCode,
   LayoutDashboard,
@@ -67,6 +68,7 @@ export const AppLayout = () => {
   // Faculty Navigation
   const facultyNav = [
     { name: 'Command Center', path: '/faculty/dashboard', icon: LayoutDashboard },
+    { name: 'AI Assistant', path: '/student/copilot', icon: Sparkles },
     { name: 'Attendance Sessions', path: '/faculty/sessions', icon: QrCode },
     { name: 'Class Attendance', path: '/faculty/attendance', icon: CalendarCheck },
     { name: 'Events Coordinator', path: '/events/manage', icon: Trophy },
@@ -82,6 +84,7 @@ export const AppLayout = () => {
   // Admin Navigation
   const adminNav = [
     { name: 'Admin Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'CampusFlow AI', path: '/student/copilot', icon: Sparkles },
     { name: 'AI Orchestrator Swarm', path: '/admin/orchestrator', icon: Workflow },
     { name: 'Campus Digital Twin', path: '/campus/digital-twin', icon: Cpu },
     { name: 'Event Operations', path: '/events/manage', icon: Trophy },
@@ -295,6 +298,9 @@ export const AppLayout = () => {
           <p className="text-slate-400 dark:text-slate-500">Integrated Multi-Agent Swarm • Human-Governed Autonomous Orchestration</p>
         </div>
       </footer>
+
+      {/* Floating Copilot Widget Accessible Everywhere */}
+      <FloatingCopilotWidget />
     </div>
   );
 };

@@ -85,6 +85,8 @@ export function App() {
             <Route path="/student/cases/:id" element={<RoleGuard allowedRoles={['student']}><CaseDetailPage /></RoleGuard>} />
             <Route path="/student/profile" element={<RoleGuard allowedRoles={['student']}><ProfilePage /></RoleGuard>} />
             <Route path="/student/copilot" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><StudentCopilotPage /></RoleGuard>} />
+            <Route path="/copilot" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><StudentCopilotPage /></RoleGuard>} />
+            <Route path="/ai-copilot" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><StudentCopilotPage /></RoleGuard>} />
 
             {/* Shared Events Hub Routes */}
             <Route path="/events" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><EventsDiscoveryPage /></RoleGuard>} />

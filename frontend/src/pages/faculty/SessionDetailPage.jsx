@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { sessionApi, attendanceApi } from '../../services/api';
 import { StatusBadge, LoadingSpinner, ErrorState } from '../../components/common/FeedbackStates';
@@ -20,18 +20,33 @@ import {
 
 export const SessionDetailPage = () => {
   const { id } = useParams();
-  const [session, setSession] = useState(null);
+  const location = useLocation();
+  const initialSession = (location.state?.session && (location.state.session.id === id || !id)) ? location.state.session : null;
+
+  const [session, setSession] = useState(initialSession);
   const [attendees, setAttendees] = useState([]);
-  const [qrPayload, setQrPayload] = useState('');
+  const [qrPayload, setQrPayload] = useState(() => {
+    if (initialSession) {
+      const activeToken = initialSession.token || initialSession.rawToken || 'ACTIVE_TOKEN_CS301';
+      const expiresAt = initialSession.expires_at || initialSession.expiresAt || new Date(Date.now() + 15 * 60000).toISOString();
+      return JSON.stringify({
+        app: 'CampusFlow',
+        session_id: initialSession.id,
+        token: activeToken,
+        expires_at: expiresAt
+      });
+    }
+    return '';
+  });
   const [copied, setCopied] = useState(false);
   const [timeLeft, setTimeLeft] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialSession);
   const [error, setError] = useState(null);
-  const [fullscreenProjector, setFullscreenProjector] = useState(false);
+  const [fullscreenProjector, setFullscreenProjector] = useState(Boolean(location.state?.autoProject));
 
   const fetchSessionData = async () => {
     try {
-      setLoading(true);
+      if (!initialSession) setLoading(true);
       setError(null);
 
       // Fetch session and attendees in parallel with safe fallbacks
@@ -40,7 +55,7 @@ export const SessionDetailPage = () => {
         attendanceApi.getSessionAttendees ? attendanceApi.getSessionAttendees(id) : attendanceApi.getSessionRecords(id)
       ]);
 
-      let sessionData = sessRes?.data?.session || sessRes?.data || sessRes?.session;
+      let sessionData = sessRes?.data?.session || sessRes?.data?.data || sessRes?.data || sessRes?.session || initialSession;
 
       if (!sessionData) {
         // Fallback demo active session
@@ -90,28 +105,30 @@ export const SessionDetailPage = () => {
       }
     } catch (err) {
       console.warn('Session data retrieval fallback:', err);
-      const fallbackToken = 'ACTIVE_TOKEN_CS301';
-      const fallbackPayload = JSON.stringify({
-        app: 'CampusFlow',
-        session_id: id || 'ses-102',
-        token: fallbackToken,
-        expires_at: new Date(Date.now() + 15 * 60000).toISOString()
-      });
-      setQrPayload(fallbackPayload);
-      setSession({
-        id: id || 'ses-102',
-        className: 'Algorithms & Data Structures (CS-301)',
-        subject_name: 'Algorithms & Data Structures',
-        subject_code: 'CS-301',
-        section: 'Section A',
-        room: 'Hall B-204',
-        status: 'active',
-        starts_at: new Date().toISOString(),
-        expires_at: new Date(Date.now() + 15 * 60000).toISOString(),
-        rawToken: fallbackToken,
-        token: fallbackToken,
-        totalAttended: 1
-      });
+      if (!session) {
+        const fallbackToken = 'ACTIVE_TOKEN_CS301';
+        const fallbackPayload = JSON.stringify({
+          app: 'CampusFlow',
+          session_id: id || 'ses-102',
+          token: fallbackToken,
+          expires_at: new Date(Date.now() + 15 * 60000).toISOString()
+        });
+        setQrPayload(fallbackPayload);
+        setSession({
+          id: id || 'ses-102',
+          className: 'Algorithms & Data Structures (CS-301)',
+          subject_name: 'Algorithms & Data Structures',
+          subject_code: 'CS-301',
+          section: 'Section A',
+          room: 'Hall B-204',
+          status: 'active',
+          starts_at: new Date().toISOString(),
+          expires_at: new Date(Date.now() + 15 * 60000).toISOString(),
+          rawToken: fallbackToken,
+          token: fallbackToken,
+          totalAttended: 1
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -123,26 +140,29 @@ export const SessionDetailPage = () => {
 
   // Live Countdown Timer
   useEffect(() => {
-    if (!session || session.status !== 'active') return;
+    if (!session) return;
+    const expiryTime = new Date(session.expires_at || session.expiresAt || (Date.now() + 15 * 60000)).getTime();
 
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const expiry = new Date(session.expires_at || session.expiresAt).getTime();
-      const diff = expiry - now;
+    const updateCountdown = () => {
+      const now = Date.now();
+      const diff = expiryTime - now;
 
       if (diff <= 0) {
         setTimeLeft('Expired');
-        setSession(prev => ({ ...prev, status: 'expired' }));
-        clearInterval(interval);
+        if (session.status === 'active') {
+          setSession(prev => prev ? ({ ...prev, status: 'expired' }) : prev);
+        }
       } else {
-        const mins = Math.floor(diff / (1000 * 60));
-        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+        const mins = Math.floor(diff / 60000);
+        const secs = Math.floor((diff % 60000) / 1000);
         setTimeLeft(`${mins}m ${secs < 10 ? '0' : ''}${secs}s remaining`);
       }
-    }, 1000);
+    };
 
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
-  }, [session]);
+  }, [session?.id, session?.expires_at, session?.status]);
 
   const handleClose = async () => {
     if (!window.confirm('Close this attendance session immediately?')) return;
