@@ -18,7 +18,14 @@ import {
   ShieldAlert,
   ChevronRight,
   Sparkles,
-  School
+  School,
+  Trophy,
+  Cpu,
+  Building,
+  Compass,
+  Bell,
+  Workflow,
+  Calendar
 } from 'lucide-react';
 
 export const AppLayout = () => {
@@ -43,9 +50,15 @@ export const AppLayout = () => {
   // Student Navigation
   const studentNav = [
     { name: 'Dashboard', path: '/student/dashboard', icon: LayoutDashboard },
+    { name: 'AI Support Copilot', path: '/student/copilot', icon: Sparkles },
+    { name: 'Events & Hackathons', path: '/events', icon: Trophy },
+    { name: 'Event Calendar', path: '/events/calendar', icon: Calendar },
     { name: 'My Attendance', path: '/student/attendance', icon: CalendarCheck },
     { name: 'Scan QR Check-in', path: '/student/scan', icon: QrCode },
-    { name: 'Report Issue', path: '/student/report-issue', icon: LifeBuoy },
+    { name: 'Smart Classrooms', path: '/campus/classrooms', icon: Building },
+    { name: 'Campus Notices', path: '/campus/notices', icon: Bell },
+    { name: 'Campus Lost & Found', path: '/campus/lost-found', icon: Compass },
+    { name: 'Grievance Portal', path: '/campus/grievances', icon: LifeBuoy },
     { name: 'Recovery Cases', path: '/student/cases', icon: ClipboardList },
     { name: 'My Profile', path: '/student/profile', icon: User }
   ];
@@ -55,6 +68,11 @@ export const AppLayout = () => {
     { name: 'Command Center', path: '/faculty/dashboard', icon: LayoutDashboard },
     { name: 'Attendance Sessions', path: '/faculty/sessions', icon: QrCode },
     { name: 'Class Attendance', path: '/faculty/attendance', icon: CalendarCheck },
+    { name: 'Events Coordinator', path: '/events/manage', icon: Trophy },
+    { name: 'Event Catalog', path: '/events', icon: Calendar },
+    { name: 'Facility Booking', path: '/campus/classrooms', icon: Building },
+    { name: 'Digital Twin Telemetry', path: '/campus/digital-twin', icon: Cpu },
+    { name: 'Campus Notices', path: '/campus/notices', icon: Bell },
     { name: 'Case Review Queue', path: '/faculty/cases', icon: ClipboardList },
     { name: 'Analytics', path: '/faculty/analytics', icon: BarChart3 },
     { name: 'Profile', path: '/faculty/profile', icon: User }
@@ -63,6 +81,11 @@ export const AppLayout = () => {
   // Admin Navigation
   const adminNav = [
     { name: 'Admin Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'AI Orchestrator Swarm', path: '/admin/orchestrator', icon: Workflow },
+    { name: 'Campus Digital Twin', path: '/campus/digital-twin', icon: Cpu },
+    { name: 'Event Operations', path: '/events/manage', icon: Trophy },
+    { name: 'Facility Navigator', path: '/campus/classrooms', icon: Building },
+    { name: 'Campus Notices', path: '/campus/notices', icon: Bell },
     { name: 'User Management', path: '/admin/users', icon: Users },
     { name: 'Classes & Sections', path: '/admin/classes', icon: Layers },
     { name: 'System Cases', path: '/admin/cases', icon: ClipboardList },
@@ -157,9 +180,9 @@ export const AppLayout = () => {
       <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex gap-6">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:block w-64 flex-shrink-0">
-          <div className="sticky top-24 bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-1">
+          <div className="sticky top-24 bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm space-y-1 max-h-[calc(100vh-8rem)] overflow-y-auto">
             <div className="px-3 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              Navigation
+              {roleLabels[user?.role]?.title || 'Navigation'}
             </div>
             {currentNav.map((item) => {
               const Icon = item.icon;
@@ -184,17 +207,18 @@ export const AppLayout = () => {
               );
             })}
 
-            {/* Quick Helper Banner */}
+            {/* AI Assistant Quick Pill */}
             <div className="pt-4 mt-4 border-t border-slate-100">
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs text-slate-600">
-                <p className="font-semibold text-slate-800 mb-0.5 flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 text-sky-600" />
-                  Independent Mode
-                </p>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  CampusFlow operates independently. External college scan claims remain unverified until faculty review.
-                </p>
-              </div>
+              <NavLink
+                to="/student/copilot"
+                className="flex items-center gap-2 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 rounded-xl border border-indigo-100 text-xs text-indigo-900 transition-all"
+              >
+                <Sparkles className="w-4 h-4 text-indigo-600" />
+                <div>
+                  <p className="font-bold">Ask AI Copilot</p>
+                  <p className="text-[10px] text-indigo-700">Attendance, Timetable & Events</p>
+                </div>
+              </NavLink>
             </div>
           </div>
         </aside>
@@ -202,7 +226,7 @@ export const AppLayout = () => {
         {/* Mobile Navigation Drawer */}
         {mobileOpen && (
           <div className="lg:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)}>
-            <div className="fixed inset-y-0 left-0 w-72 bg-white p-5 shadow-2xl flex flex-col justify-between" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-y-0 left-0 w-72 bg-white p-5 shadow-2xl flex flex-col justify-between overflow-y-auto" onClick={(e) => e.stopPropagation()}>
               <div className="space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2">
@@ -259,11 +283,10 @@ export const AppLayout = () => {
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-200/80 bg-white py-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p>© 2026 CampusFlow — Agentic Attendance Trust & Recovery Platform.</p>
-          <p className="text-slate-400">Independent demonstration architecture • Human-governed AI review</p>
+          <p>© 2026 CampusFlow — Autonomous Multi-Agent Smart Campus Platform.</p>
+          <p className="text-slate-400">Integrated Multi-Agent Swarm • Human-Governed Autonomous Orchestration</p>
         </div>
       </footer>
     </div>
   );
 };
-

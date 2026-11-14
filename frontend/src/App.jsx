@@ -20,6 +20,20 @@ import { CasesListPage } from './pages/student/CasesListPage';
 import { CaseDetailPage } from './pages/student/CaseDetailPage';
 import { ProfilePage } from './pages/student/ProfilePage';
 
+// Events Hub Pages
+import { EventsDiscoveryPage } from './pages/events/EventsDiscoveryPage';
+import { EventDetailPage } from './pages/events/EventDetailPage';
+import { EventCalendarPage } from './pages/events/EventCalendarPage';
+import { EventManagementPage } from './pages/events/EventManagementPage';
+
+// Campus Intelligence Pages
+import { CampusDigitalTwinPage } from './pages/campus/CampusDigitalTwinPage';
+import { ClassroomFinderPage } from './pages/campus/ClassroomFinderPage';
+import { LostFoundPage } from './pages/campus/LostFoundPage';
+import { NoticeSummarizerPage } from './pages/campus/NoticeSummarizerPage';
+import { GrievancePortalPage } from './pages/campus/GrievancePortalPage';
+import { StudentCopilotPage } from './pages/campus/StudentCopilotPage';
+
 // Faculty Pages
 import { FacultyDashboard } from './pages/faculty/FacultyDashboard';
 import { SessionsListPage } from './pages/faculty/SessionsListPage';
@@ -39,6 +53,7 @@ import { AdminSessionsPage } from './pages/admin/AdminSessionsPage';
 import { AdminCasesPage } from './pages/admin/AdminCasesPage';
 import { AdminAnalyticsPage } from './pages/admin/AdminAnalyticsPage';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
+import { AutonomousOrchestratorPage } from './pages/admin/AutonomousOrchestratorPage';
 
 export function App() {
   return (
@@ -67,6 +82,20 @@ export function App() {
             <Route path="/student/cases" element={<RoleGuard allowedRoles={['student']}><CasesListPage /></RoleGuard>} />
             <Route path="/student/cases/:id" element={<RoleGuard allowedRoles={['student']}><CaseDetailPage /></RoleGuard>} />
             <Route path="/student/profile" element={<RoleGuard allowedRoles={['student']}><ProfilePage /></RoleGuard>} />
+            <Route path="/student/copilot" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><StudentCopilotPage /></RoleGuard>} />
+
+            {/* Shared Events Hub Routes */}
+            <Route path="/events" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><EventsDiscoveryPage /></RoleGuard>} />
+            <Route path="/events/:id" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><EventDetailPage /></RoleGuard>} />
+            <Route path="/events/calendar" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><EventCalendarPage /></RoleGuard>} />
+            <Route path="/events/manage" element={<RoleGuard allowedRoles={['faculty', 'admin']}><EventManagementPage /></RoleGuard>} />
+
+            {/* Shared Campus Intelligence Routes */}
+            <Route path="/campus/digital-twin" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><CampusDigitalTwinPage /></RoleGuard>} />
+            <Route path="/campus/classrooms" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><ClassroomFinderPage /></RoleGuard>} />
+            <Route path="/campus/lost-found" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><LostFoundPage /></RoleGuard>} />
+            <Route path="/campus/notices" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><NoticeSummarizerPage /></RoleGuard>} />
+            <Route path="/campus/grievances" element={<RoleGuard allowedRoles={['student', 'faculty', 'admin']}><GrievancePortalPage /></RoleGuard>} />
 
             {/* Faculty Routes */}
             <Route path="/faculty/dashboard" element={<RoleGuard allowedRoles={['faculty', 'admin']}><FacultyDashboard /></RoleGuard>} />
@@ -81,6 +110,7 @@ export function App() {
 
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<RoleGuard allowedRoles={['admin']}><AdminDashboard /></RoleGuard>} />
+            <Route path="/admin/orchestrator" element={<RoleGuard allowedRoles={['admin']}><AutonomousOrchestratorPage /></RoleGuard>} />
             <Route path="/admin/users" element={<RoleGuard allowedRoles={['admin']}><UserManagementPage /></RoleGuard>} />
             <Route path="/admin/classes" element={<RoleGuard allowedRoles={['admin']}><ClassManagementPage /></RoleGuard>} />
             <Route path="/admin/sessions" element={<RoleGuard allowedRoles={['admin']}><AdminSessionsPage /></RoleGuard>} />
@@ -98,4 +128,3 @@ export function App() {
 }
 
 export default App;
-

@@ -23,7 +23,7 @@ api.interceptors.request.use((config) => {
 // ----------------------------------------------------------------------
 // RESILIENT CLIENT-SIDE FALLBACK STORE (FOR CLOUD DEPLOYMENTS LIKE VERCEL)
 // ----------------------------------------------------------------------
-const STORAGE_KEY = 'campusflow_client_store';
+const STORAGE_KEY = 'campusflow_client_store_v2';
 
 function getStore() {
   const existing = localStorage.getItem(STORAGE_KEY);
@@ -33,14 +33,14 @@ function getStore() {
 
   const initialStore = {
     users: [
-      { id: 'usr-student-01', role: 'student', full_name: 'Alex Rivera', name: 'Alex Rivera', email: 'alex.rivera@apex.edu', reg_number: '21BCE1042', institution_name: 'Apex Institute of Technology' },
+      { id: 'usr-student-01', role: 'student', full_name: 'Alex Rivera', name: 'Alex Rivera', email: 'alex.rivera@apex.edu', reg_number: '21BCE1042', department: 'Computer Science & Engineering', institution_name: 'Apex Institute of Technology' },
       { id: 'usr-faculty-01', role: 'faculty', full_name: 'Prof. Marcus Vance', name: 'Prof. Marcus Vance', email: 'prof.vance@apex.edu', department: 'Computer Science & Engineering', institution_name: 'Apex Institute of Technology' },
-      { id: 'usr-admin-01', role: 'admin', full_name: 'Dr. Sarah Jenkins', name: 'Dr. Sarah Jenkins', email: 'admin.jenkins@apex.edu', title: 'Dean of Academic Affairs', institution_name: 'Apex Institute of Technology' }
+      { id: 'usr-admin-01', role: 'admin', full_name: 'Dr. Sarah Jenkins', name: 'Dr. Sarah Jenkins', email: 'admin.jenkins@apex.edu', title: 'Dean of Academic Affairs', department: 'Academic Affairs', institution_name: 'Apex Institute of Technology' }
     ],
     classes: [
-      { id: 'cls-cs301', code: 'CS-301', name: 'Algorithms & Data Structures', semester: 5, enrolled_count: 64, room: 'Hall B-204' },
-      { id: 'cls-cs302', code: 'CS-302', name: 'Distributed Systems & Cloud', semester: 5, enrolled_count: 58, room: 'Lab 3' },
-      { id: 'cls-cs303', code: 'CS-303', name: 'Database Management Systems', semester: 4, enrolled_count: 62, room: 'Hall A-101' }
+      { id: 'cls-cs301', code: 'CS-301', name: 'Algorithms & Data Structures', semester: 5, enrolled_count: 64, room: 'Hall B-204', faculty_id: 'usr-faculty-01', faculty_name: 'Prof. Marcus Vance' },
+      { id: 'cls-cs302', code: 'CS-302', name: 'Distributed Systems & Cloud', semester: 5, enrolled_count: 58, room: 'Lab 3', faculty_id: 'usr-faculty-01', faculty_name: 'Prof. Marcus Vance' },
+      { id: 'cls-cs303', code: 'CS-303', name: 'Database Management Systems', semester: 4, enrolled_count: 62, room: 'Hall A-101', faculty_id: 'usr-faculty-01', faculty_name: 'Prof. Marcus Vance' }
     ],
     sessions: [
       {
@@ -108,6 +108,266 @@ function getStore() {
         },
         decision: null
       }
+    ],
+    events: [
+      {
+        id: 'evt-001',
+        title: 'Apex InnoHacks 2026: Campus Smart Hackathon',
+        short_description: '36-hour national level hackathon focused on Agentic AI, Smart IoT campuses, and sustainable green computing with ₹1,50,000 in prizes.',
+        description: 'Apex InnoHacks 2026 brings together the brightest student minds to engineer real-world software & IoT solutions. Track categories include Multi-Agent Autonomous Systems, Decentralized Campus Credentials, and Clean Energy Smart Grids.',
+        category: 'hackathon',
+        organizer: 'Department of Computer Science & Engineering',
+        organizing_department: 'Computer Science & Engineering',
+        faculty_coordinator: 'Prof. Marcus Vance',
+        student_coordinator: 'Rohan Sharma (Lead GDG)',
+        venue: 'Auditorium Hall 1 & Advanced Computing Lab',
+        mode: 'offline',
+        start_date: new Date(Date.now() + 5 * 86400000).toISOString(),
+        end_date: new Date(Date.now() + 7 * 86400000).toISOString(),
+        registration_deadline: new Date(Date.now() + 3 * 86400000).toISOString(),
+        capacity: 150,
+        registered_count: 118,
+        min_team_size: 2,
+        max_team_size: 4,
+        is_published: true,
+        status: 'published',
+        cover_image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1000&q=80',
+        prizes: '1st Prize: ₹75,000 + Cloud Credits | 2nd Prize: ₹45,000 | 3rd Prize: ₹30,000',
+        rules: 'All code must be written during the hackathon. Pre-existing templates must be declared during registration. Open-source models allowed.'
+      },
+      {
+        id: 'evt-002',
+        title: 'Hands-on Agentic AI & LLM Orchestration Workshop',
+        short_description: 'Master LangGraph, Google Gemini API, and autonomous multi-agent tool execution in a comprehensive 2-day hands-on bootcamp.',
+        description: 'Deep dive into architecting resilient agent swarms, memory systems, and deterministic tool execution pipelines. Every participant gets dedicated GPU cluster access and Google Cloud certification voucher.',
+        category: 'workshop',
+        organizer: 'AI & Data Science Student Council',
+        organizing_department: 'Artificial Intelligence & Machine Learning',
+        faculty_coordinator: 'Dr. Elena Rostova',
+        student_coordinator: 'Priya Sundaram',
+        venue: 'Turing Computing Lab 402',
+        mode: 'hybrid',
+        start_date: new Date(Date.now() + 2 * 86400000).toISOString(),
+        end_date: new Date(Date.now() + 3 * 86400000).toISOString(),
+        registration_deadline: new Date(Date.now() + 1 * 86400000).toISOString(),
+        capacity: 60,
+        registered_count: 54,
+        min_team_size: 1,
+        max_team_size: 1,
+        is_published: true,
+        status: 'published',
+        cover_image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80',
+        prizes: 'Official Certificate of Excellence + Google Cloud $100 Credits',
+        rules: 'Prerequisites: Basic Python proficiency. Bring your own laptop with Node/Python 3.10+ installed.'
+      },
+      {
+        id: 'evt-003',
+        title: 'Guest Lecture: Scalable Microservices & Kubernetes in Fintech',
+        short_description: 'Executive talk by Principal Architect from Stripe on high-throughput distributed transaction processing.',
+        description: 'Discover how modern financial infrastructure handles millions of idempotent transactions per second without data drift.',
+        category: 'guest_lecture',
+        organizer: 'Apex Tech Society',
+        organizing_department: 'Information Technology',
+        faculty_coordinator: 'Dr. Rajesh Nair',
+        student_coordinator: 'Karan Mehra',
+        venue: 'Newton Lecture Theatre 101 & Zoom',
+        mode: 'online',
+        start_date: new Date(Date.now() + 8 * 86400000).toISOString(),
+        end_date: new Date(Date.now() + 8 * 86400000 + 7200000).toISOString(),
+        registration_deadline: new Date(Date.now() + 6 * 86400000).toISOString(),
+        capacity: 300,
+        registered_count: 240,
+        min_team_size: 1,
+        max_team_size: 1,
+        is_published: true,
+        status: 'published',
+        cover_image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1000&q=80',
+        prizes: 'Q&A Fast-Track Interview Referral for Summer 2026 Internships',
+        rules: 'Open to all departments and all academic years.'
+      },
+      {
+        id: 'evt-004',
+        title: 'CyberShield 2026: Campus CTF (Capture The Flag)',
+        short_description: 'Competitive ethical hacking competition covering web exploitation, reverse engineering, cryptography, and network forensics.',
+        description: 'Test your penetration testing and defense skills in simulated red-team vs blue-team scenarios designed by top security researchers.',
+        category: 'coding_competition',
+        organizer: 'Cyber Security Research Wing',
+        organizing_department: 'Computer Science & Engineering',
+        faculty_coordinator: 'Prof. Arvind Swamy',
+        student_coordinator: 'Siddharth Roy',
+        venue: 'Cyber Range Lab (Block B 3rd Floor)',
+        mode: 'offline',
+        start_date: new Date(Date.now() + 12 * 86400000).toISOString(),
+        end_date: new Date(Date.now() + 13 * 86400000).toISOString(),
+        registration_deadline: new Date(Date.now() + 10 * 86400000).toISOString(),
+        capacity: 80,
+        registered_count: 65,
+        min_team_size: 1,
+        max_team_size: 3,
+        is_published: true,
+        status: 'published',
+        cover_image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1000&q=80',
+        prizes: '1st: ₹40,000 | 2nd: ₹20,000 | Bug Bounty Hardware Kits',
+        rules: 'Attacking scoring servers or teammates infrastructure will lead to instant disqualification.'
+      }
+    ],
+    eventRegistrations: [
+      {
+        id: 'reg-001',
+        event_id: 'evt-001',
+        user_id: 'usr-student-01',
+        status: 'confirmed',
+        registration_type: 'team',
+        team_name: 'VectorZero',
+        team_members: ['Alex Rivera (alex.rivera@apex.edu)', 'Maya Patel (maya.p@apex.edu)', 'Arjun Nair (arjun.n@apex.edu)'],
+        created_at: new Date(Date.now() - 86400000).toISOString()
+      }
+    ],
+    classrooms: [
+      { id: 'rm-101', code: 'A-101', name: 'Lecture Hall A-101', building: 'Engineering Block A', floor: 1, capacity: 80, type: 'lecture_hall', status: 'available', has_projector: true, has_ac: true, has_smartboard: true, has_video_conferencing: true, power_load_kw: 3.4, temperature_c: 22.4, current_occupancy: 0 },
+      { id: 'rm-204', code: 'B-204', name: 'Hall B-204', building: 'Science & Computing Block B', floor: 2, capacity: 70, type: 'lecture_hall', status: 'occupied', has_projector: true, has_ac: true, has_smartboard: true, has_video_conferencing: false, current_course: 'CS-301: Algorithms & Data Structures', current_faculty: 'Prof. Marcus Vance', power_load_kw: 4.8, temperature_c: 23.8, current_occupancy: 64 },
+      { id: 'rm-302', code: 'B-302', name: 'AI & GPU Research Lab', building: 'Science & Computing Block B', floor: 3, capacity: 45, type: 'computing_lab', status: 'occupied', has_projector: true, has_ac: true, has_smartboard: true, has_video_conferencing: true, current_course: 'CS-302: Distributed Systems & Cloud', current_faculty: 'Dr. Elena Rostova', power_load_kw: 12.2, temperature_c: 20.1, current_occupancy: 42 },
+      { id: 'rm-401', code: 'C-401', name: 'Robotics & Embedded Systems Lab', building: 'Technology Tower C', floor: 4, capacity: 40, type: 'computing_lab', status: 'available', has_projector: true, has_ac: true, has_smartboard: false, has_video_conferencing: false, power_load_kw: 1.8, temperature_c: 21.9, current_occupancy: 0 },
+      { id: 'rm-501', code: 'AUD-1', name: 'Central Auditorium Hall 1', building: 'Central Campus Complex', floor: 1, capacity: 450, type: 'auditorium', status: 'reserved', has_projector: true, has_ac: true, has_smartboard: true, has_video_conferencing: true, current_course: 'Apex InnoHacks Rehearsal', current_faculty: 'Student Affairs', power_load_kw: 28.6, temperature_c: 22.0, current_occupancy: 25 },
+      { id: 'rm-202', code: 'LIB-202', name: 'Collaborative Study Seminar Room', building: 'Central Library', floor: 2, capacity: 30, type: 'seminar_hall', status: 'available', has_projector: true, has_ac: true, has_smartboard: true, has_video_conferencing: true, power_load_kw: 2.1, temperature_c: 22.5, current_occupancy: 0 }
+    ],
+    notices: [
+      {
+        id: 'ntc-001',
+        title: 'Mid-Semester Examinations Schedule & Seating Allotment Fall 2026',
+        category: 'academic',
+        urgency: 'high',
+        target_audience: 'all_students',
+        department: 'Controller of Examinations',
+        publish_date: new Date(Date.now() - 48 * 3600000).toISOString(),
+        summary: '• Mid-Semester examinations commence on November 24, 2026 across two daily slots (9:30 AM and 2:00 PM).\n• Hall tickets will be verified with biometrics/QR scanning at entrance doors.\n• Students with attendance below 75% must resolve pending recovery dossiers before November 20.',
+        action_items: [
+          'Download and print hall ticket before Nov 20, 2026',
+          'Verify room allocation 24 hours prior to first exam',
+          'Carry physical College Identity Card'
+        ],
+        deadlines: [
+          { item: 'Hall Ticket Verification Window Closes', date: '2026-11-20T17:00:00Z' },
+          { item: 'First Exam Session (CS-301 / EC-302)', date: '2026-11-24T09:30:00Z' }
+        ]
+      },
+      {
+        id: 'ntc-002',
+        title: 'Google Cloud & AI Innovation Grant Opportunity for Final & 3rd Year Students',
+        category: 'research_grant',
+        urgency: 'medium',
+        target_audience: 'computer_science',
+        department: 'Center for Industry Collaboration',
+        publish_date: new Date(Date.now() - 12 * 3600000).toISOString(),
+        summary: '• Apex Institute has partnered with Google Cloud to sponsor 20 student-led generative AI and multi-agent projects with $5,000 micro-grants.\n• Open to individual teams of up to 3 students.\n• Shortlisted proposals get direct mentorship from DeepMind researchers.',
+        action_items: [
+          'Submit 2-page project proposal in PDF format',
+          'Include faculty mentor endorsement signature',
+          'Register team through CampusFlow Events portal'
+        ],
+        deadlines: [
+          { item: 'Project Proposal Submission Deadline', date: '2026-11-30T23:59:59Z' }
+        ]
+      }
+    ],
+    grievances: [
+      {
+        id: 'grv-001',
+        ticket_number: 'GRV-2026-042',
+        student_id: 'usr-student-01',
+        student_name: 'Alex Rivera',
+        category: 'infrastructure',
+        title: 'Projector HDMI flickering continuously in Hall B-204',
+        description: 'The ceiling projector keeps cutting out during slides, making data structures code walkthroughs difficult to see from the middle rows.',
+        department_assigned: 'Campus Facilities & IT Services',
+        urgency: 'medium',
+        status: 'in_progress',
+        sla_hours: 24,
+        created_at: new Date(Date.now() - 6 * 3600000).toISOString(),
+        resolution_notes: 'Technician dispatched at 1:30 PM. High-speed 4K fiber HDMI cable replacement scheduled.'
+      }
+    ],
+    lostFound: [
+      {
+        id: 'lf-001',
+        type: 'found',
+        title: 'Lenovo ThinkPad 65W USB-C Charger',
+        description: 'Black AC adapter left plugged into wall socket next to desk #14 in Computing Lab 3.',
+        location_found: 'Science Block B, Computing Lab 3',
+        reported_by: 'Campus Security Desk (Officer Balan)',
+        reported_at: new Date(Date.now() - 14 * 3600000).toISOString(),
+        status: 'available_for_claim',
+        image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=400&q=80',
+        ai_tags: ['charger', 'usb-c', 'lenovo', 'black', 'electronics']
+      },
+      {
+        id: 'lf-002',
+        type: 'lost',
+        title: 'Casio fx-991CW ClassWiz Scientific Calculator',
+        description: 'White scientific calculator with blue protective slide case and serial sticker ending in -882.',
+        location_found: 'Engineering Block A, Room A-101',
+        reported_by: 'Maya Patel (21BCE1098)',
+        reported_at: new Date(Date.now() - 22 * 3600000).toISOString(),
+        status: 'reported_lost',
+        image_url: 'https://images.unsplash.com/photo-1611125832047-1d7ad1e8e48f?auto=format&fit=crop&w=400&q=80',
+        ai_tags: ['calculator', 'casio', 'white', 'academics']
+      }
+    ],
+    orchestratorTasks: [
+      {
+        id: 'orch-task-101',
+        title: 'Faculty Absence Schedule Reallocation',
+        trigger_event: 'Prof. Marcus Vance logged medical emergency for CS-301 (10:00 AM)',
+        status: 'pending_approval',
+        requires_admin_approval: true,
+        urgency: 'high',
+        created_at: new Date(Date.now() - 15 * 60000).toISOString(),
+        agents_involved: ['Timetable Agent', 'Resource Agent', 'Notification Agent'],
+        summary: 'Timetable conflict detected. Proxy faculty Dr. Sarah Jenkins identified; Hall B-204 confirmed available. Ready to notify 64 enrolled students upon Dean authorization.',
+        steps: [
+          { agent: 'Timetable Agent', action: 'Detected unstaffed session CS-301 at 10:00 AM', status: 'completed' },
+          { agent: 'Resource Agent', action: 'Verified Hall B-204 is clear of conflicting bookings', status: 'completed' },
+          { agent: 'Timetable Agent', action: 'Selected qualified proxy faculty Dr. Sarah Jenkins (Algorithms subject specialist)', status: 'completed' },
+          { agent: 'Autonomous Orchestrator', action: 'Generated human-in-the-loop approval ticket for Administrator', status: 'waiting_for_approval' },
+          { agent: 'Notification Agent', action: 'Standby: Send push alerts & SMS to 64 enrolled students', status: 'queued' }
+        ],
+        proposed_action: {
+          course: 'CS-301: Algorithms & Data Structures',
+          original_faculty: 'Prof. Marcus Vance',
+          proxy_faculty: 'Dr. Sarah Jenkins',
+          room: 'Hall B-204',
+          time: 'Today, 10:00 AM - 11:30 AM',
+          notification_target: '64 Students Enrolled in Section A'
+        }
+      },
+      {
+        id: 'orch-task-102',
+        title: 'Automated 75% Attendance Risk Warning Dispatch',
+        trigger_event: 'Bi-weekly scheduled attendance compliance sweep',
+        status: 'completed',
+        requires_admin_approval: false,
+        urgency: 'medium',
+        created_at: new Date(Date.now() - 4 * 3600000).toISOString(),
+        agents_involved: ['Attendance Intelligence Agent', 'Academic Recovery Agent', 'Notification Agent'],
+        summary: 'Analyzed 1,420 students. 18 students flagged under 75% threshold. Generated 18 personalized recovery revision schedules and notified students safely.',
+        steps: [
+          { agent: 'Attendance Intelligence Agent', action: 'Calculated attendance rates across all 24 departments', status: 'completed' },
+          { agent: 'Academic Recovery Agent', action: 'Compiled personalized recovery trajectories for 18 at-risk students', status: 'completed' },
+          { agent: 'Notification Agent', action: 'Delivered tailored low-stress recovery notices without duplicates', status: 'completed' }
+        ]
+      }
+    ],
+    timetables: [
+      { id: 'tt-1', day: 'Monday', time: '09:00 - 10:30', course_code: 'CS-301', course_name: 'Algorithms & Data Structures', room: 'Hall B-204', faculty: 'Prof. Marcus Vance', type: 'Lecture' },
+      { id: 'tt-2', day: 'Monday', time: '11:00 - 12:30', course_code: 'CS-302', course_name: 'Distributed Systems & Cloud', room: 'Lab 3', faculty: 'Prof. Marcus Vance', type: 'Lab' },
+      { id: 'tt-3', day: 'Tuesday', time: '10:00 - 11:30', course_code: 'CS-303', course_name: 'Database Management Systems', room: 'Hall A-101', faculty: 'Dr. Elena Rostova', type: 'Lecture' },
+      { id: 'tt-4', day: 'Wednesday', time: '09:00 - 11:00', course_code: 'CS-301', course_name: 'Algorithms Problem Solving Lab', room: 'Computing Lab 402', faculty: 'Prof. Marcus Vance', type: 'Lab' },
+      { id: 'tt-5', day: 'Thursday', time: '14:00 - 15:30', course_code: 'CS-304', course_name: 'Agentic AI & Swarm Architecture', room: 'Hall B-204', faculty: 'Dr. Sarah Jenkins', type: 'Seminar' }
+    ],
+    assignments: [
+      { id: 'asg-01', course_code: 'CS-301', title: 'Dynamic Programming & Graph Traversal Implementation', due_date: new Date(Date.now() + 48 * 3600000).toISOString(), status: 'pending', max_marks: 50, submission_type: 'code_repo' },
+      { id: 'asg-02', course_code: 'CS-302', title: 'Kubernetes Cluster Deployment on GCP', due_date: new Date(Date.now() + 96 * 3600000).toISOString(), status: 'submitted', max_marks: 30, submission_type: 'pdf' },
+      { id: 'asg-03', course_code: 'CS-303', title: 'Relational Normalization & BCNF Proofs', due_date: new Date(Date.now() - 24 * 3600000).toISOString(), status: 'late_pending', max_marks: 40, submission_type: 'pdf' }
     ]
   };
 
@@ -139,43 +399,59 @@ async function withFallback(apiCall, fallbackFn) {
 // ----------------------------------------------------------------------
 
 export const authApi = {
-  getMe: () => withFallback(
-    () => api.get('/auth/me').then(r => r.data),
+  register: (data) => withFallback(
+    () => api.post('/auth/register', data).then(r => r.data),
     () => {
-      const saved = localStorage.getItem('campusflow_user');
       const store = getStore();
-      const user = saved ? JSON.parse(saved) : store.users[0];
-      return { success: true, data: user, message: 'Profile retrieved' };
+      const existing = store.users.find(u => u.email.toLowerCase() === data.email.toLowerCase());
+      if (existing) {
+        throw new Error('An account with this email address already exists.');
+      }
+      const newUser = {
+        id: 'usr-' + Date.now(),
+        role: 'student',
+        full_name: data.full_name,
+        name: data.full_name,
+        email: data.email,
+        reg_number: '21BCE' + Math.floor(1000 + Math.random() * 9000),
+        department: 'Computer Science & Engineering',
+        institution_name: 'Apex Institute of Technology'
+      };
+      store.users.push(newUser);
+      saveStore(store);
+      const token = 'demo-jwt-student-' + newUser.id;
+      return {
+        success: true,
+        message: 'Account registered successfully',
+        data: { profile: newUser, token }
+      };
     }
   ),
 
-  login: (credentials) => withFallback(
-    () => api.post('/auth/login', credentials).then(r => r.data),
+  login: (data) => withFallback(
+    () => api.post('/auth/login', data).then(r => r.data),
     () => {
       const store = getStore();
-      const email = (credentials.email || '').toLowerCase();
-      let user = store.users.find(u => u.email.toLowerCase() === email);
-
+      let user = store.users.find(u => u.email.toLowerCase() === data.email.toLowerCase());
       if (!user) {
-        // Auto-provision student profile for cloud demo
-        const namePart = email.split('@')[0].replace(/[._]/g, ' ');
+        const role = data.email.includes('faculty') ? 'faculty' :
+                     data.email.includes('admin') ? 'admin' : 'student';
+        const namePart = data.email.split('@')[0].replace(/[._]/g, ' ');
         const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-        const role = email.includes('faculty') ? 'faculty' :
-                     email.includes('admin') ? 'admin' : 'student';
         user = {
           id: 'usr-' + Date.now(),
           role,
           full_name: formattedName,
           name: formattedName,
-          email: credentials.email,
+          email: data.email,
           reg_number: '21BCE' + Math.floor(1000 + Math.random() * 9000),
+          department: 'Computer Science & Engineering',
           institution_name: 'Apex Institute of Technology'
         };
         store.users.push(user);
         saveStore(store);
       }
-
-      const token = 'client-jwt-' + user.role + '-' + user.id;
+      const token = 'demo-jwt-' + user.role + '-' + user.id;
       return {
         success: true,
         message: 'Login successful',
@@ -184,47 +460,52 @@ export const authApi = {
     }
   ),
 
-  register: (data) => withFallback(
-    () => api.post('/auth/register', data).then(r => r.data),
+  getMe: () => withFallback(
+    () => api.get('/auth/me').then(r => r.data),
     () => {
       const store = getStore();
-      const newUser = {
-        id: 'usr-' + Date.now(),
-        role: 'student', // Public registration strictly student role
-        full_name: data.full_name || 'Alex',
-        name: data.full_name || 'Alex',
-        email: data.email,
-        reg_number: '21BCE' + Math.floor(1000 + Math.random() * 9000),
-        institution_name: 'Apex Institute of Technology',
-        created_at: new Date().toISOString()
-      };
-
-      store.users.push(newUser);
-      saveStore(store);
-
-      const token = 'client-jwt-student-' + newUser.id;
-      return {
-        success: true,
-        message: 'Student account registered successfully',
-        data: { profile: newUser, token }
-      };
+      const currentRole = localStorage.getItem('campusflow_role') || 'student';
+      const user = store.users.find(u => u.role === currentRole) || store.users[0];
+      return { success: true, data: user };
     }
   ),
 
   logout: () => withFallback(
     () => api.post('/auth/logout').then(r => r.data),
-    () => ({ success: true, message: 'Logged out' })
+    () => ({ success: true, message: 'Logged out successfully' })
   ),
 
   updateProfile: (data) => withFallback(
     () => api.patch('/auth/profile', data).then(r => r.data),
-    () => ({ success: true, data, message: 'Profile updated' })
+    () => {
+      const store = getStore();
+      if (store.users[0]) Object.assign(store.users[0], data);
+      saveStore(store);
+      return { success: true, data: store.users[0], message: 'Profile updated' };
+    }
+  ),
+
+  switchRole: (role) => withFallback(
+    () => api.post('/auth/switch-role', { role }).then(r => r.data),
+    () => {
+      const store = getStore();
+      const user = store.users.find(u => u.role === role) || {
+        id: 'usr-' + role + '-01',
+        role,
+        full_name: role.toUpperCase() + ' Demo User',
+        name: role.toUpperCase() + ' Demo User',
+        email: `${role}@apex.edu`,
+        department: 'Computer Science & Engineering',
+        institution_name: 'Apex Institute of Technology'
+      };
+      return { success: true, data: user };
+    }
   )
 };
 
 export const classApi = {
-  list: (params) => withFallback(
-    () => api.get('/classes', { params }).then(r => r.data),
+  list: () => withFallback(
+    () => api.get('/classes').then(r => r.data),
     () => ({ success: true, data: getStore().classes })
   ),
   getById: (id) => withFallback(
@@ -234,183 +515,695 @@ export const classApi = {
       return { success: true, data: cls };
     }
   ),
-  create: (data) => withFallback(
-    () => api.post('/classes', data).then(r => r.data),
-    () => {
-      const store = getStore();
-      const newClass = { id: 'cls-' + Date.now(), ...data };
-      store.classes.push(newClass);
-      saveStore(store);
-      return { success: true, data: newClass };
-    }
-  ),
-  getSubjects: (classId) => withFallback(
-    () => api.get(`/classes/${classId}/subjects`).then(r => r.data),
-    () => ({ success: true, data: [] })
+  getAttendanceSummary: (classId) => withFallback(
+    () => api.get(`/classes/${classId}/attendance-summary`).then(r => r.data),
+    () => ({
+      success: true,
+      data: {
+        totalEnrolled: 64,
+        averageAttendance: '92.4%',
+        studentsAtRisk: 2,
+        sessionsCount: 14
+      }
+    })
   )
 };
 
 export const sessionApi = {
-  list: (params) => withFallback(
-    () => api.get('/sessions', { params }).then(r => r.data),
-    () => ({ success: true, data: getStore().sessions })
-  ),
   create: (data) => withFallback(
     () => api.post('/sessions', data).then(r => r.data),
     () => {
       const store = getStore();
-      const rawToken = 'CF_QR_' + Math.random().toString(36).substring(2, 10).toUpperCase();
-      const targetClass = store.classes.find(c => c.id === data.classId) || store.classes[0];
       const newSession = {
         id: 'ses-' + Date.now(),
-        class_id: targetClass.id,
-        classId: targetClass.id,
-        className: targetClass.name + ' (' + targetClass.code + ')',
+        classId: data.classId || 'cls-cs301',
+        class_id: data.classId || 'cls-cs301',
+        className: 'Algorithms & Data Structures (CS-301)',
         faculty_id: 'usr-faculty-01',
-        startTime: new Date().toISOString(),
-        expiresAt: new Date(Date.now() + (data.durationMinutes || 10) * 60000).toISOString(),
+        start_time: new Date().toISOString(),
+        expires_at: new Date(Date.now() + (data.durationMinutes || 5) * 60000).toISOString(),
         status: 'active',
-        rawToken,
+        rawToken: 'ACTIVE_TOKEN_' + Math.random().toString(36).substring(7).toUpperCase(),
         totalAttended: 0,
-        room: data.room || 'Auditorium Hall'
+        room: data.room || 'Hall B-204'
       };
       store.sessions.unshift(newSession);
       saveStore(store);
-      return { success: true, data: newSession, message: 'Dynamic QR attendance session launched' };
+      return { success: true, data: newSession, message: 'Session opened successfully' };
+    }
+  ),
+  getActive: () => withFallback(
+    () => api.get('/sessions/active').then(r => r.data),
+    () => {
+      const active = getStore().sessions.find(s => s.status === 'active');
+      return { success: true, data: active || null };
     }
   ),
   getById: (id) => withFallback(
     () => api.get(`/sessions/${id}`).then(r => r.data),
     () => {
-      const ses = getStore().sessions.find(s => s.id === id) || getStore().sessions[0];
-      return { success: true, data: ses };
+      const s = getStore().sessions.find(x => x.id === id) || getStore().sessions[0];
+      return { success: true, data: s };
     }
   ),
   close: (id) => withFallback(
     () => api.post(`/sessions/${id}/close`).then(r => r.data),
     () => {
       const store = getStore();
-      const ses = store.sessions.find(s => s.id === id);
-      if (ses) ses.status = 'closed';
-      saveStore(store);
-      return { success: true, data: ses, message: 'Session closed' };
+      const target = store.sessions.find(s => s.id === id);
+      if (target) {
+        target.status = 'closed';
+        saveStore(store);
+      }
+      return { success: true, message: 'Session closed' };
     }
   ),
-  getQR: (id) => withFallback(
-    () => api.get(`/sessions/${id}/qr`).then(r => r.data),
-    () => {
-      const ses = getStore().sessions.find(s => s.id === id) || getStore().sessions[0];
-      return { success: true, data: { token: ses.rawToken, expiresAt: ses.expiresAt } };
-    }
+  verifyToken: (sessionId, token) => withFallback(
+    () => api.post(`/sessions/${sessionId}/verify-token`, { token }).then(r => r.data),
+    () => ({ success: true, message: 'Token verified' })
   )
 };
 
 export const attendanceApi = {
-  scan: (data) => withFallback(
-    () => api.post('/attendance/scan', data).then(r => r.data),
+  checkIn: (payload) => withFallback(
+    () => api.post('/attendance/check-in', payload).then(r => r.data),
     () => {
       const store = getStore();
-      const session = store.sessions.find(s => s.rawToken === data.token);
-      if (!session) {
-        return { success: false, message: 'Invalid QR Token. Check-in rejected.' };
-      }
-      const record = {
+      const newRecord = {
         id: 'att-' + Date.now(),
-        sessionId: session.id,
-        studentId: data.studentId || 'usr-student-01',
+        sessionId: payload.sessionId || 'ses-102',
+        studentId: 'usr-student-01',
         studentName: 'Alex Rivera',
         timestamp: new Date().toISOString(),
         status: 'present',
         method: 'qr_scan',
-        class_name: session.className
+        class_name: 'CS-301: Algorithms & Data Structures'
       };
-      store.attendance.push(record);
-      session.totalAttended = (session.totalAttended || 0) + 1;
+      store.attendance.unshift(newRecord);
+      const activeSession = store.sessions.find(s => s.id === payload.sessionId || s.status === 'active');
+      if (activeSession) {
+        activeSession.totalAttended = (activeSession.totalAttended || 0) + 1;
+      }
       saveStore(store);
-      return { success: true, data: record, message: 'Attendance recorded successfully!' };
+      return { success: true, data: newRecord, message: 'Attendance recorded successfully!' };
     }
   ),
-  getHistory: (params) => withFallback(
-    () => api.get('/attendance/history', { params }).then(r => r.data),
+  getMyHistory: () => withFallback(
+    () => api.get('/attendance/my-history').then(r => r.data),
     () => ({ success: true, data: getStore().attendance })
   ),
-  getSessionAttendees: (sessionId) => withFallback(
+  getSessionRecords: (sessionId) => withFallback(
     () => api.get(`/attendance/session/${sessionId}`).then(r => r.data),
-    () => {
-      const records = getStore().attendance.filter(a => a.sessionId === sessionId);
-      return { success: true, data: records };
-    }
+    () => ({ success: true, data: getStore().attendance.filter(a => a.sessionId === sessionId) })
   ),
-  reportIssue: (data) => withFallback(
-    () => api.post('/attendance/report-issue', data).then(r => r.data),
-    () => ({ success: true, message: 'Issue report received' })
+  getStats: () => withFallback(
+    () => api.get('/attendance/stats').then(r => r.data),
+    () => ({
+      success: true,
+      data: {
+        totalSessions: 28,
+        attendedSessions: 26,
+        attendancePercentage: '92.8%',
+        threshold: 75,
+        riskLevel: 'safe'
+      }
+    })
   )
 };
 
 export const caseApi = {
-  list: (params) => withFallback(
-    () => api.get('/cases', { params }).then(r => r.data),
+  submit: (data) => withFallback(
+    () => api.post('/cases', data).then(r => r.data),
+    () => {
+      const store = getStore();
+      const newCase = {
+        id: 'rec-' + Date.now(),
+        caseNumber: 'CF-2026-' + Math.floor(1000 + Math.random() * 9000),
+        case_number: 'CF-2026-' + Math.floor(1000 + Math.random() * 9000),
+        studentId: 'usr-student-01',
+        student_id: 'usr-student-01',
+        studentName: 'Alex Rivera',
+        studentReg: '21BCE1042',
+        classId: data.classId || 'cls-cs301',
+        className: 'CS-301: Algorithms & Data Structures',
+        sessionId: data.sessionId || 'ses-101',
+        category: data.category || 'camera_failure',
+        categoryLabel: data.categoryLabel || 'Camera / QR Scanner Glitch',
+        status: 'pending_faculty_review',
+        description: data.description,
+        occurrenceTime: data.occurrenceTime || new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        aiDossier: {
+          integrityRisk: 'low',
+          integrityExplanation: 'Device telemetry consistent with active session window. No duplicate scans detected.',
+          recoveryFindings: 'Session active at claimed time. High historical compliance.',
+          evidenceTimeline: [
+            { time: new Date().toLocaleTimeString(), type: 'system', event: 'Issue report submitted by student' }
+          ],
+          coordinatorRecommendation: 'Recommend FACULTY APPROVAL.'
+        },
+        decision: null
+      };
+      store.cases.unshift(newCase);
+      saveStore(store);
+      return { success: true, data: newCase, message: 'Recovery ticket submitted successfully!' };
+    }
+  ),
+  getMyCases: () => withFallback(
+    () => api.get('/cases/my-cases').then(r => r.data),
+    () => ({ success: true, data: getStore().cases })
+  ),
+  getFacultyQueue: () => withFallback(
+    () => api.get('/cases/faculty-queue').then(r => r.data),
     () => ({ success: true, data: getStore().cases })
   ),
   getById: (id) => withFallback(
     () => api.get(`/cases/${id}`).then(r => r.data),
     () => {
-      const targetCase = getStore().cases.find(c => c.id === id || c.caseNumber === id) || getStore().cases[0];
-      return { success: true, data: targetCase };
+      const item = getStore().cases.find(c => c.id === id) || getStore().cases[0];
+      return { success: true, data: item };
     }
   ),
-  addAdditionalInfo: (id, data) => withFallback(
-    () => api.post(`/cases/${id}/additional-information`, data).then(r => r.data),
-    () => ({ success: true, message: 'Additional information recorded' })
-  ),
-  analyze: (id) => withFallback(
-    () => api.post(`/cases/${id}/analyze`).then(r => r.data),
-    () => ({ success: true, message: 'AI Analysis complete' })
-  ),
-  getAgentActivity: (id) => withFallback(
-    () => api.get(`/cases/${id}/agent-activity`).then(r => r.data),
-    () => ({ success: true, data: [] })
-  )
-};
-
-export const decisionApi = {
-  record: (caseId, data) => withFallback(
-    () => api.post(`/cases/${caseId}/decision`, data).then(r => r.data),
+  updateDecision: (id, payload) => withFallback(
+    () => api.post(`/cases/${id}/decision`, payload).then(r => r.data),
     () => {
       const store = getStore();
-      const targetCase = store.cases.find(c => c.id === caseId || c.caseNumber === caseId);
+      const targetCase = store.cases.find(c => c.id === id);
       if (targetCase) {
-        targetCase.status = data.decision === 'approve' ? 'approved' : 'rejected';
+        targetCase.status = payload.decision === 'approved' ? 'approved' : 'rejected';
         targetCase.decision = {
-          outcome: targetCase.status,
-          decidedBy: data.facultyName || 'Prof. Marcus Vance',
+          decision: targetCase.status,
+          reason: payload.reason,
           decidedAt: new Date().toISOString(),
-          reason: data.reason
+          facultyName: payload.facultyName || 'Prof. Marcus Vance'
         };
-        if (data.decision === 'approve') {
-          store.attendance.push({
-            id: 'att-recov-' + Date.now(),
-            sessionId: targetCase.sessionId || 'ses-recovered',
-            studentId: targetCase.studentId || 'usr-student-01',
-            studentName: targetCase.studentName || 'Alex Rivera',
-            timestamp: new Date().toISOString(),
-            status: 'verified_recovery',
-            method: 'faculty_recovery_approval',
-            class_name: targetCase.className
-          });
-        }
         saveStore(store);
       }
       return {
         success: true,
         data: targetCase,
-        message: `Decision successfully recorded: Case was ${targetCase?.status?.toUpperCase()} by Prof. Marcus Vance.`
+        message: `Decision successfully recorded: Case was ${targetCase?.status?.toUpperCase()}`
       };
     }
   ),
   list: (caseId) => withFallback(
     () => api.get(`/cases/${caseId}/decisions`).then(r => r.data),
     () => ({ success: true, data: [] })
+  )
+};
+
+// ----------------------------------------------------------------------
+// NEW HACKATHONS & WORKSHOPS HUB API (EVENTS)
+// ----------------------------------------------------------------------
+export const eventApi = {
+  list: (params) => withFallback(
+    () => api.get('/events', { params }).then(r => r.data),
+    () => {
+      const store = getStore();
+      let list = store.events || [];
+      if (params?.category && params.category !== 'all') {
+        list = list.filter(e => e.category === params.category);
+      }
+      if (params?.mode && params.mode !== 'all') {
+        list = list.filter(e => e.mode === params.mode);
+      }
+      return { success: true, data: list };
+    }
+  ),
+
+  getById: (id) => withFallback(
+    () => api.get(`/events/${id}`).then(r => r.data),
+    () => {
+      const store = getStore();
+      const evt = store.events.find(e => e.id === id) || store.events[0];
+      const isRegistered = store.eventRegistrations.some(r => r.event_id === id);
+      return { success: true, data: { ...evt, is_registered: isRegistered } };
+    }
+  ),
+
+  getRecommendations: () => withFallback(
+    () => api.get('/events/recommendations').then(r => r.data),
+    () => {
+      const store = getStore();
+      return {
+        success: true,
+        data: {
+          recommendedEvents: store.events.slice(0, 2),
+          matchReason: 'Top matches for Computer Science & Engineering students interested in Autonomous Multi-Agent AI and Hackathons.'
+        }
+      };
+    }
+  ),
+
+  register: (id, payload) => withFallback(
+    () => api.post(`/events/${id}/register`, payload).then(r => r.data),
+    () => {
+      const store = getStore();
+      const evt = store.events.find(e => e.id === id);
+      const isFull = evt && evt.registered_count >= evt.capacity;
+      const newReg = {
+        id: 'reg-' + Date.now(),
+        event_id: id,
+        user_id: 'usr-student-01',
+        registration_type: payload.registrationType || 'individual',
+        team_name: payload.teamName || null,
+        team_members: payload.teamMembers || ['Alex Rivera (alex.rivera@apex.edu)'],
+        status: isFull ? 'waitlisted' : 'confirmed',
+        created_at: new Date().toISOString()
+      };
+      store.eventRegistrations.push(newReg);
+      if (evt && !isFull) {
+        evt.registered_count = (evt.registered_count || 0) + 1;
+      }
+      saveStore(store);
+      return {
+        success: true,
+        data: newReg,
+        message: isFull
+          ? 'Event capacity reached! You have been placed on the verified waitlist.'
+          : 'Registration confirmed! Event added to your interactive calendar.'
+      };
+    }
+  ),
+
+  create: (data) => withFallback(
+    () => api.post('/events', data).then(r => r.data),
+    () => {
+      const store = getStore();
+      const newEvt = {
+        id: 'evt-' + Date.now(),
+        title: data.title,
+        short_description: data.short_description || data.description?.substring(0, 100),
+        description: data.description,
+        category: data.category || 'hackathon',
+        organizer: data.organizer || 'College Administration',
+        organizing_department: data.organizing_department || 'Computer Science & Engineering',
+        venue: data.venue || 'Campus Auditorium',
+        mode: data.mode || 'offline',
+        start_date: data.start_date || new Date(Date.now() + 7 * 86400000).toISOString(),
+        end_date: data.end_date || new Date(Date.now() + 8 * 86400000).toISOString(),
+        registration_deadline: data.registration_deadline || new Date(Date.now() + 5 * 86400000).toISOString(),
+        capacity: parseInt(data.capacity) || 100,
+        registered_count: 0,
+        min_team_size: parseInt(data.min_team_size) || 1,
+        max_team_size: parseInt(data.max_team_size) || 4,
+        is_published: true,
+        status: 'published',
+        cover_image: data.cover_image || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1000&q=80',
+        prizes: data.prizes || 'Certificates & Merch',
+        rules: data.rules || 'Standard institutional code of conduct applies.'
+      };
+      store.events.unshift(newEvt);
+      saveStore(store);
+      return { success: true, data: newEvt, message: 'Event successfully published to student catalog!' };
+    }
+  ),
+
+  update: (id, data) => withFallback(
+    () => api.put(`/events/${id}`, data).then(r => r.data),
+    () => {
+      const store = getStore();
+      const idx = store.events.findIndex(e => e.id === id);
+      if (idx !== -1) {
+        store.events[idx] = { ...store.events[idx], ...data };
+        saveStore(store);
+      }
+      return { success: true, message: 'Event updated successfully' };
+    }
+  ),
+
+  delete: (id) => withFallback(
+    () => api.delete(`/events/${id}`).then(r => r.data),
+    () => {
+      const store = getStore();
+      store.events = store.events.filter(e => e.id !== id);
+      saveStore(store);
+      return { success: true, message: 'Event deleted' };
+    }
+  ),
+
+  getRegistrations: (eventId) => withFallback(
+    () => api.get(`/events/${eventId}/registrations`).then(r => r.data),
+    () => {
+      const store = getStore();
+      const regs = store.eventRegistrations.filter(r => r.event_id === eventId);
+      return { success: true, data: regs };
+    }
+  )
+};
+
+// ----------------------------------------------------------------------
+// CAMPUS DIGITAL TWIN & SMART CLASSROOMS API
+// ----------------------------------------------------------------------
+export const classroomApi = {
+  list: (params) => withFallback(
+    () => api.get('/classrooms', { params }).then(r => r.data),
+    () => {
+      const store = getStore();
+      let rooms = store.classrooms;
+      if (params?.building && params.building !== 'all') {
+        rooms = rooms.filter(r => r.building === params.building);
+      }
+      if (params?.type && params.type !== 'all') {
+        rooms = rooms.filter(r => r.type === params.type);
+      }
+      if (params?.status && params.status !== 'all') {
+        rooms = rooms.filter(r => r.status === params.status);
+      }
+      return { success: true, data: rooms };
+    }
+  ),
+
+  getDigitalTwinState: () => withFallback(
+    () => api.get('/classrooms/digital-twin').then(r => r.data),
+    () => {
+      const store = getStore();
+      const totalRooms = store.classrooms.length;
+      const occupiedRooms = store.classrooms.filter(r => r.status === 'occupied').length;
+      const availableRooms = store.classrooms.filter(r => r.status === 'available').length;
+      const totalPowerLoad = store.classrooms.reduce((acc, r) => acc + (r.power_load_kw || 0), 0).toFixed(1);
+      const avgTemp = (store.classrooms.reduce((acc, r) => acc + (r.temperature_c || 22), 0) / totalRooms).toFixed(1);
+
+      return {
+        success: true,
+        data: {
+          totalRooms,
+          occupiedRooms,
+          availableRooms,
+          utilizationRate: Math.round((occupiedRooms / totalRooms) * 100),
+          totalPowerLoadKw: totalPowerLoad,
+          avgTemperatureC: avgTemp,
+          buildings: [
+            { name: 'Engineering Block A', occupied: 1, total: 2, energyStatus: 'normal' },
+            { name: 'Science & Computing Block B', occupied: 2, total: 2, energyStatus: 'high_load' },
+            { name: 'Technology Tower C', occupied: 0, total: 1, energyStatus: 'eco' },
+            { name: 'Central Campus Complex', occupied: 1, total: 1, energyStatus: 'event_mode' }
+          ],
+          classrooms: store.classrooms
+        }
+      };
+    }
+  ),
+
+  book: (payload) => withFallback(
+    () => api.post('/classrooms/book', payload).then(r => r.data),
+    () => {
+      const store = getStore();
+      const room = store.classrooms.find(r => r.id === payload.roomId || r.code === payload.roomCode);
+      if (room) {
+        room.status = 'reserved';
+        room.current_course = payload.purpose || 'Special Workshop';
+        saveStore(store);
+      }
+      return { success: true, message: `Room ${room?.name || 'Classroom'} reserved successfully!` };
+    }
+  )
+};
+
+// ----------------------------------------------------------------------
+// AI STUDENT SUPPORT COPILOT API
+// ----------------------------------------------------------------------
+export const copilotApi = {
+  ask: (query, context = {}) => withFallback(
+    () => api.post('/copilot/ask', { query, context }).then(r => r.data),
+    () => {
+      const lower = query.toLowerCase();
+      let answer = '';
+      let topic = 'general';
+      let chips = ['Check my attendance', 'Show upcoming hackathons', 'What classes do I have today?'];
+
+      if (lower.includes('attendance') || lower.includes('percentage') || lower.includes('threshold') || lower.includes('shortage')) {
+        topic = 'attendance';
+        answer = "Your verified attendance across all enrolled subjects is **92.8%** (26/28 sessions attended), safely above the mandatory institutional **75% threshold**. In CS-301 Algorithms & Data Structures you are at 94.2%. Keep it up!";
+        chips = ['View attendance breakdown', 'Submit recovery ticket', 'Upcoming exams'];
+      } else if (lower.includes('hackathon') || lower.includes('event') || lower.includes('workshop')) {
+        topic = 'events';
+        answer = "There are **4 active events** published this month! Recommended for you:\n1. **Apex InnoHacks 2026** (36h Hackathon, ₹1.5L prize, deadline in 3 days).\n2. **Hands-on Agentic AI & LLM Workshop** (Turing Lab 402, this weekend).\nYou can register individually or with a team in the Events Hub!";
+        chips = ['Register for InnoHacks', 'View event calendar', 'View prizes'];
+      } else if (lower.includes('timetable') || lower.includes('class') || lower.includes('schedule') || lower.includes('today')) {
+        topic = 'timetable';
+        answer = "Here is your academic schedule for today:\n• **09:00 - 10:30 AM**: CS-301 Algorithms & Data Structures in **Hall B-204** with Prof. Marcus Vance.\n• **11:00 - 12:30 PM**: CS-302 Distributed Systems Lab in **Computing Lab 3**.";
+        chips = ['Find available study rooms', 'Check assignment deadlines', 'Contact faculty'];
+      } else if (lower.includes('assignment') || lower.includes('homework') || lower.includes('deadline')) {
+        topic = 'assignments';
+        answer = "You have **1 urgent assignment due**: \n• **Dynamic Programming Implementation (CS-301)** due in 48 hours.\n• **Kubernetes Deployment (CS-302)** has already been submitted.\nWould you like the Academic Recovery Agent to build a 2-hour study plan for it?";
+        chips = ['Generate revision plan', 'Open assignment portal', 'Check exam dates'];
+      } else {
+        answer = `I am CampusFlow's Autonomous AI Support Copilot. I have live access to your student profile (Alex Rivera, 21BCE1042), attendance records, today's timetable, pending assignments, and campus events. How can I assist your studies today?`;
+      }
+
+      return {
+        success: true,
+        data: {
+          answer,
+          topic,
+          suggestedFollowUps: chips,
+          timestamp: new Date().toISOString()
+        }
+      };
+    }
+  )
+};
+
+// ----------------------------------------------------------------------
+// AUTONOMOUS AI ORCHESTRATOR API
+// ----------------------------------------------------------------------
+export const orchestratorApi = {
+  listTasks: () => withFallback(
+    () => api.get('/orchestrator/tasks').then(r => r.data),
+    () => ({ success: true, data: getStore().orchestratorTasks })
+  ),
+
+  runWorkflow: (scenarioKey) => withFallback(
+    () => api.post('/orchestrator/run-workflow', { scenarioKey }).then(r => r.data),
+    () => {
+      const store = getStore();
+      const newTask = {
+        id: 'orch-task-' + Date.now(),
+        title: scenarioKey === 'faculty_absence' ? 'Emergency Faculty Absence & Proxy Allocation' : 'Attendance Risk & Recovery Pipeline',
+        trigger_event: 'Autonomous Orchestrator triggered simulation: ' + scenarioKey,
+        status: 'pending_approval',
+        requires_admin_approval: true,
+        urgency: 'high',
+        created_at: new Date().toISOString(),
+        agents_involved: ['Timetable Agent', 'Resource Agent', 'Academic Recovery Agent', 'Notification Agent'],
+        summary: 'Detected schedule variance. Alternative faculty Dr. Sarah Jenkins matched with Hall B-204. Pending human authorization.',
+        steps: [
+          { agent: 'Timetable Agent', action: 'Scanned schedule dependencies and detected conflict', status: 'completed' },
+          { agent: 'Resource Agent', action: 'Confirmed Hall B-204 is clear and AC/Projector functioning', status: 'completed' },
+          { agent: 'Autonomous Orchestrator', action: 'Presented optimal solution to administrator queue', status: 'waiting_for_approval' },
+          { agent: 'Notification Agent', action: 'Standby to broadcast SMS/Push notification to enrolled students', status: 'queued' }
+        ],
+        proposed_action: {
+          course: 'CS-301: Algorithms & Data Structures',
+          original_faculty: 'Prof. Marcus Vance',
+          proxy_faculty: 'Dr. Sarah Jenkins',
+          room: 'Hall B-204',
+          time: 'Today, 10:00 AM - 11:30 AM',
+          notification_target: '64 Students Enrolled in Section A'
+        }
+      };
+      store.orchestratorTasks.unshift(newTask);
+      saveStore(store);
+      return { success: true, data: newTask, message: 'Workflow pipeline successfully executed by Multi-Agent Swarm!' };
+    }
+  ),
+
+  approveTask: (taskId, comments) => withFallback(
+    () => api.post(`/orchestrator/tasks/${taskId}/approve`, { comments }).then(r => r.data),
+    () => {
+      const store = getStore();
+      const task = store.orchestratorTasks.find(t => t.id === taskId);
+      if (task) {
+        task.status = 'approved_and_executed';
+        task.requires_admin_approval = false;
+        task.steps.forEach(s => s.status = 'completed');
+        task.admin_approval = {
+          approved_by: 'Dr. Sarah Jenkins (Dean of Academic Affairs)',
+          approved_at: new Date().toISOString(),
+          comments: comments || 'Approved. Notification Agent dispatched messages to all students.'
+        };
+        saveStore(store);
+      }
+      return { success: true, message: 'Action authorized. Autonomous execution completed and students notified!' };
+    }
+  ),
+
+  rejectTask: (taskId, reason) => withFallback(
+    () => api.post(`/orchestrator/tasks/${taskId}/reject`, { reason }).then(r => r.data),
+    () => {
+      const store = getStore();
+      const task = store.orchestratorTasks.find(t => t.id === taskId);
+      if (task) {
+        task.status = 'rejected_by_admin';
+        task.requires_admin_approval = false;
+        task.admin_approval = {
+          rejected_by: 'Dr. Sarah Jenkins (Dean of Academic Affairs)',
+          rejected_at: new Date().toISOString(),
+          reason: reason || 'Class cancelled instead of proxy reallocation.'
+        };
+        saveStore(store);
+      }
+      return { success: true, message: 'Workflow rejected. Rollback complete.' };
+    }
+  )
+};
+
+// ----------------------------------------------------------------------
+// CAMPUS LOST & FOUND API
+// ----------------------------------------------------------------------
+export const lostFoundApi = {
+  list: (params) => withFallback(
+    () => api.get('/lost-found', { params }).then(r => r.data),
+    () => {
+      const store = getStore();
+      let items = store.lostFound || [];
+      if (params?.type && params.type !== 'all') {
+        items = items.filter(i => i.type === params.type);
+      }
+      return { success: true, data: items };
+    }
+  ),
+
+  report: (data) => withFallback(
+    () => api.post('/lost-found', data).then(r => r.data),
+    () => {
+      const store = getStore();
+      const newItem = {
+        id: 'lf-' + Date.now(),
+        type: data.type || 'lost',
+        title: data.title,
+        description: data.description,
+        location_found: data.location || 'Campus Grounds',
+        reported_by: data.reported_by || 'Alex Rivera (Student)',
+        reported_at: new Date().toISOString(),
+        status: data.type === 'found' ? 'available_for_claim' : 'reported_lost',
+        image_url: data.image_url || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80',
+        ai_tags: (data.title + ' ' + (data.description || '')).toLowerCase().split(' ').slice(0, 5)
+      };
+      store.lostFound.unshift(newItem);
+      saveStore(store);
+      return { success: true, data: newItem, message: 'Item recorded! Campus AI will scan for matches.' };
+    }
+  ),
+
+  claim: (id, proof) => withFallback(
+    () => api.post(`/lost-found/${id}/claim`, { proof }).then(r => r.data),
+    () => {
+      const store = getStore();
+      const item = store.lostFound.find(i => i.id === id);
+      if (item) {
+        item.status = 'claim_pending_verification';
+        saveStore(store);
+      }
+      return { success: true, message: 'Claim submitted. Visit Campus Security Desk with your ID to retrieve.' };
+    }
+  )
+};
+
+// ----------------------------------------------------------------------
+// CAMPUS NOTICES & CIRCULARS API
+// ----------------------------------------------------------------------
+export const noticeApi = {
+  list: (params) => withFallback(
+    () => api.get('/notices', { params }).then(r => r.data),
+    () => ({ success: true, data: getStore().notices || [] })
+  ),
+  summarize: (id) => withFallback(
+    () => api.get(`/notices/${id}/summary`).then(r => r.data),
+    () => {
+      const notice = getStore().notices.find(n => n.id === id) || getStore().notices[0];
+      return {
+        success: true,
+        data: {
+          summary: notice.summary,
+          action_items: notice.action_items,
+          deadlines: notice.deadlines
+        }
+      };
+    }
+  )
+};
+
+// ----------------------------------------------------------------------
+// CAMPUS GRIEVANCES API
+// ----------------------------------------------------------------------
+export const grievanceApi = {
+  list: () => withFallback(
+    () => api.get('/grievances').then(r => r.data),
+    () => ({ success: true, data: getStore().grievances || [] })
+  ),
+  submit: (data) => withFallback(
+    () => api.post('/grievances', data).then(r => r.data),
+    () => {
+      const store = getStore();
+      const newGrv = {
+        id: 'grv-' + Date.now(),
+        ticket_number: 'GRV-2026-' + Math.floor(100 + Math.random() * 900),
+        student_id: 'usr-student-01',
+        student_name: 'Alex Rivera',
+        category: data.category || 'infrastructure',
+        title: data.title,
+        description: data.description,
+        department_assigned: data.category === 'academic' ? 'Academic Dean Office' : 'Campus Facilities & IT Services',
+        urgency: data.urgency || 'medium',
+        status: 'submitted',
+        sla_hours: 48,
+        created_at: new Date().toISOString(),
+        resolution_notes: 'AI Grievance Agent auto-assigned to department coordinator.'
+      };
+      store.grievances.unshift(newGrv);
+      saveStore(store);
+      return { success: true, data: newGrv, message: 'Grievance registered. AI assigned ticket SLA of 48h.' };
+    }
+  ),
+  updateStatus: (id, status, notes) => withFallback(
+    () => api.patch(`/grievances/${id}/status`, { status, notes }).then(r => r.data),
+    () => {
+      const store = getStore();
+      const item = store.grievances.find(g => g.id === id);
+      if (item) {
+        item.status = status;
+        if (notes) item.resolution_notes = notes;
+        saveStore(store);
+      }
+      return { success: true, message: 'Grievance status updated' };
+    }
+  )
+};
+
+// ----------------------------------------------------------------------
+// TIMETABLES & ACADEMIC RECOVERY API
+// ----------------------------------------------------------------------
+export const timetableApi = {
+  getForStudent: () => withFallback(
+    () => api.get('/timetable/student').then(r => r.data),
+    () => ({ success: true, data: getStore().timetables || [] })
+  ),
+  getForFaculty: () => withFallback(
+    () => api.get('/timetable/faculty').then(r => r.data),
+    () => ({ success: true, data: getStore().timetables || [] })
+  )
+};
+
+export const assignmentApi = {
+  listPending: () => withFallback(
+    () => api.get('/assignments/pending').then(r => r.data),
+    () => ({ success: true, data: getStore().assignments || [] })
+  ),
+  getRecoveryPlan: () => withFallback(
+    () => api.get('/assignments/recovery-plan').then(r => r.data),
+    () => ({
+      success: true,
+      data: {
+        totalPending: 2,
+        recommendedSchedule: [
+          { day: 'Today (Evening)', task: 'Finish Dynamic Programming Implementation (CS-301)', duration: '2 Hours' },
+          { day: 'Tomorrow (Afternoon)', task: 'BCNF Proofs Revision & Catch-up', duration: '1.5 Hours' }
+        ],
+        targetImprovement: '+8.5% projected grade boost'
+      }
+    })
   )
 };
 
