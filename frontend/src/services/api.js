@@ -536,6 +536,20 @@ export const classApi = {
       return { success: true, data: cls };
     }
   ),
+  getSubjects: (classId) => withFallback(
+    () => api.get(`/classes/${classId}/subjects`).then(r => r.data),
+    () => {
+      const store = getStore();
+      const cls = store.classes.find(c => c.id === classId) || store.classes[0];
+      return {
+        success: true,
+        data: cls?.subjects || [
+          { id: 'sub-01', code: 'CS-301', name: 'Algorithms & Data Structures' },
+          { id: 'sub-02', code: 'CS-302', name: 'Distributed Systems & Cloud Computing' }
+        ]
+      };
+    }
+  ),
   getAttendanceSummary: (classId) => withFallback(
     () => api.get(`/classes/${classId}/attendance-summary`).then(r => r.data),
     () => ({
@@ -566,22 +580,44 @@ export const sessionApi = {
     () => api.post('/sessions', data).then(r => r.data),
     () => {
       const store = getStore();
+      const rawToken = 'CF_QR_' + Math.random().toString(36).substring(2, 10).toUpperCase();
+      const duration = parseInt(data.duration_minutes || data.durationMinutes || 15, 10);
+      const now = new Date();
+      const expiresAt = new Date(now.getTime() + duration * 60000);
+
+      const targetClass = store.classes.find(c => c.id === (data.class_id || data.classId)) || store.classes[0];
+
       const newSession = {
         id: 'ses-' + Date.now(),
-        classId: data.classId || 'cls-cs301',
-        class_id: data.classId || 'cls-cs301',
-        className: 'Algorithms & Data Structures (CS-301)',
+        classId: targetClass.id,
+        class_id: targetClass.id,
+        className: targetClass.name + ' (' + targetClass.code + ')',
+        subject_id: data.subject_id || data.subjectId || 'sub-01',
+        subject_name: targetClass.name,
+        subject_code: targetClass.code,
         faculty_id: 'usr-faculty-01',
-        start_time: new Date().toISOString(),
-        expires_at: new Date(Date.now() + (data.durationMinutes || 5) * 60000).toISOString(),
+        facultyId: 'usr-faculty-01',
+        start_time: now.toISOString(),
+        startTime: now.toISOString(),
+        starts_at: now.toISOString(),
+        expires_at: expiresAt.toISOString(),
+        expiresAt: expiresAt.toISOString(),
         status: 'active',
-        rawToken: 'ACTIVE_TOKEN_' + Math.random().toString(36).substring(7).toUpperCase(),
+        rawToken,
+        token: rawToken,
+        token_hash: rawToken,
+        tokenHash: rawToken,
         totalAttended: 0,
         room: data.room || 'Hall B-204'
       };
       store.sessions.unshift(newSession);
       saveStore(store);
-      return { success: true, data: newSession, message: 'Session opened successfully' };
+      return {
+        success: true,
+        data: newSession,
+        session: newSession,
+        message: 'Dynamic QR attendance session launched'
+      };
     }
   ),
   getActive: () => withFallback(
@@ -595,7 +631,17 @@ export const sessionApi = {
     () => api.get(`/sessions/${id}`).then(r => r.data),
     () => {
       const s = getStore().sessions.find(x => x.id === id) || getStore().sessions[0];
-      return { success: true, data: s };
+      const token = s.rawToken || s.token || 'ACTIVE_TOKEN_CS301';
+      const completeSession = {
+        ...s,
+        token,
+        rawToken: token,
+        token_hash: token,
+        tokenHash: token,
+        starts_at: s.starts_at || s.start_time || s.startTime || new Date().toISOString(),
+        expires_at: s.expires_at || s.expiresAt || new Date(Date.now() + 15 * 60000).toISOString()
+      };
+      return { success: true, data: completeSession, session: completeSession };
     }
   ),
   close: (id) => withFallback(
@@ -607,7 +653,7 @@ export const sessionApi = {
         target.status = 'closed';
         saveStore(store);
       }
-      return { success: true, message: 'Session closed' };
+      return { success: true, message: 'Session closed', data: target };
     }
   ),
   verifyToken: (sessionId, token) => withFallback(
@@ -617,6 +663,20 @@ export const sessionApi = {
 };
 
 export const attendanceApi = {
+  getSessionAttendees: (sessionId) => withFallback(
+    () => api.get(`/attendance/session/${sessionId}`).then(r => r.data),
+    () => ({
+      success: true,
+      data: getStore().attendance.filter(a => a.sessionId === sessionId || a.session_id === sessionId)
+    })
+  ),
+  getSessionRecords: (sessionId) => withFallback(
+    () => api.get(`/attendance/session/${sessionId}`).then(r => r.data),
+    () => ({
+      success: true,
+      data: getStore().attendance.filter(a => a.sessionId === sessionId || a.session_id === sessionId)
+    })
+  ),
   scan: (payload) => withFallback(
     () => api.post('/attendance/scan', payload).then(r => r.data),
     () => {
@@ -1028,44 +1088,310 @@ export const classroomApi = {
 // ----------------------------------------------------------------------
 // AI STUDENT SUPPORT COPILOT API
 // ----------------------------------------------------------------------
+// CAMPUSFLOW AI COPILOT API
+// ----------------------------------------------------------------------
 export const copilotApi = {
-  ask: (query, context = {}) => withFallback(
-    () => api.post('/copilot/ask', { query, context }).then(r => r.data),
+  chat: ({ query, conversationId, role = 'student' }) => withFallback(
+    () => api.post('/copilot/chat', { query, conversationId }).then(r => r.data),
     () => {
+      const store = getStore();
+      if (!store.ai_conversations) store.ai_conversations = [];
+      if (!store.ai_messages) store.ai_messages = [];
+
+      let convId = conversationId;
+      let conv = store.ai_conversations.find(c => c.id === convId);
+      if (!conv) {
+        convId = 'conv-' + Date.now();
+        conv = {
+          id: convId,
+          title: query.slice(0, 32) + (query.length > 32 ? '...' : ''),
+          topic: 'general',
+          is_pinned: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        store.ai_conversations.unshift(conv);
+      } else {
+        conv.updated_at = new Date().toISOString();
+      }
+
+      // Record User Message
+      const userMsg = {
+        id: 'msg-u-' + Date.now(),
+        conversation_id: convId,
+        sender: 'user',
+        role: 'user',
+        content: query.trim(),
+        chips: [],
+        tool_calls: [],
+        agent_trace: [],
+        created_at: new Date().toISOString()
+      };
+      store.ai_messages.push(userMsg);
+
+      // Analyze intent locally
       const lower = query.toLowerCase();
       let answer = '';
       let topic = 'general';
       let chips = ['Check my attendance', 'Show upcoming hackathons', 'What classes do I have today?'];
+      let richCard = null;
+      let toolExecuted = null;
+      const agentTrace = [
+        { agent: 'CampusFlow Orchestrator', action: 'Analyzing intent & authorized context', status: 'completed' }
+      ];
 
       if (lower.includes('attendance') || lower.includes('percentage') || lower.includes('threshold') || lower.includes('shortage')) {
         topic = 'attendance';
-        answer = "Your verified attendance across all enrolled subjects is **92.8%** (26/28 sessions attended), safely above the mandatory institutional **75% threshold**. In CS-301 Algorithms & Data Structures you are at 94.2%. Keep it up!";
-        chips = ['View attendance breakdown', 'Submit recovery ticket', 'Upcoming exams'];
+        agentTrace.push({ agent: 'Attendance Intelligence Agent', action: 'Audited attendance ledger and verified 75% threshold', status: 'completed' });
+        answer = "Your verified attendance across all enrolled subjects is **92.8%** (26/28 sessions attended), safely above the mandatory institutional **75.0% threshold**.\n\n• **CS-301 Algorithms & Data Structures**: 93.3% (14/15 sessions)\n• **CS-302 Distributed Systems**: 92.3% (12/13 sessions)\n\nYou can miss up to 3 more consecutive sessions without falling below 75%. Keep up the strong consistency!";
+        chips = ['View attendance ledger', 'Scan QR Code Now', 'Exam Regulations'];
+        richCard = {
+          type: 'attendance_summary',
+          overallPercentage: '92.8%',
+          threshold: 75.0,
+          totalSessions: 28,
+          attendedSessions: 26,
+          status: 'safe',
+          courses: [
+            { code: 'CS-301', name: 'Algorithms & Data Structures', attended: 14, total: 15, pct: '93.3%' },
+            { code: 'CS-302', name: 'Distributed Systems', attended: 12, total: 13, pct: '92.3%' }
+          ]
+        };
+      } else if (lower.includes('register me') || lower.includes('sign me up') || (lower.includes('register') && lower.includes('inno'))) {
+        topic = 'events';
+        agentTrace.push({ agent: 'Notification & Registration Agent', action: 'Verified student eligibility and booked team slot', status: 'completed' });
+        toolExecuted = {
+          toolName: 'register_for_event',
+          status: 'completed',
+          details: { eventTitle: 'Apex InnoHacks 2026', registrationId: 'reg-' + Date.now(), status: 'Confirmed' }
+        };
+        answer = "🎉 **Registration Confirmed!** You have been registered for **Apex InnoHacks 2026**.\n\n• **Event:** Apex InnoHacks 2026: Campus Smart Hackathon\n• **Dates:** November 20–22, 2026 (36-Hour National Hackathon)\n• **Venue:** Auditorium Hall 1 & Advanced Computing Lab\n• **Prize Pool:** ₹1,50,000 Cash Pool\n• **Pass Status:** Confirmed (Team Lead)\n\nYour pass is pinned to your profile and added to your Event Calendar.";
+        chips = ['View Event Calendar', 'Add Team Members', 'Hackathon Guidelines'];
+        richCard = {
+          type: 'event_registration_success',
+          eventTitle: 'Apex InnoHacks 2026',
+          category: 'Hackathon',
+          venue: 'Auditorium Hall 1',
+          eventDate: 'Nov 20-22, 2026',
+          status: 'Confirmed'
+        };
       } else if (lower.includes('hackathon') || lower.includes('event') || lower.includes('workshop')) {
         topic = 'events';
-        answer = "There are **4 active events** published this month! Recommended for you:\n1. **Apex InnoHacks 2026** (36h Hackathon, ₹1.5L prize, deadline in 3 days).\n2. **Hands-on Agentic AI & LLM Workshop** (Turing Lab 402, this weekend).\nYou can register individually or with a team in the Events Hub!";
-        chips = ['Register for InnoHacks', 'View event calendar', 'View prizes'];
+        agentTrace.push({ agent: 'Event Discovery Agent', action: 'Matched upcoming campus competitions & hackathons', status: 'completed' });
+        answer = "Here are the top upcoming events and competitions organized on campus:\n\n1. 🏆 **Apex InnoHacks 2026: Campus Smart Hackathon**\n   • **Category:** National 36h Hackathon | **Prizes:** ₹1,50,000 Cash Pool\n   • **Focus Tracks:** Multi-Agent AI, Smart Campus IoT, Green Computing\n   • **Registration Deadline:** In 3 days (Nov 17)\n\n2. 🤖 **Hands-on Agentic AI & LLM Systems Workshop**\n   • **Category:** Technical Workshop | **Venue:** Turing Lab 402\n   • **Focus:** Gemini 2.0 & Autonomous Swarms\n\nWould you like me to register you for **Apex InnoHacks 2026** right now?";
+        chips = ['Register me for InnoHacks', 'Open Events Hub', 'Show Workshops Only'];
+        richCard = {
+          type: 'event_card',
+          events: [
+            { id: 'evt-001', title: 'Apex InnoHacks 2026', category: 'Hackathon', date: 'Nov 20-22, 2026', venue: 'Auditorium Hall 1', deadline: 'In 3 days', prizes: '₹1.5 Lakhs' },
+            { id: 'evt-002', title: 'Autonomous Multi-Agent AI Workshop', category: 'Workshop', date: 'Nov 25, 2026', venue: 'Turing Lab 402', deadline: 'In 7 days', prizes: 'Hardware Kits' }
+          ]
+        };
       } else if (lower.includes('timetable') || lower.includes('class') || lower.includes('schedule') || lower.includes('today')) {
         topic = 'timetable';
-        answer = "Here is your academic schedule for today:\n• **09:00 - 10:30 AM**: CS-301 Algorithms & Data Structures in **Hall B-204** with Prof. Marcus Vance.\n• **11:00 - 12:30 PM**: CS-302 Distributed Systems Lab in **Computing Lab 3**.";
-        chips = ['Find available study rooms', 'Check assignment deadlines', 'Contact faculty'];
-      } else if (lower.includes('assignment') || lower.includes('homework') || lower.includes('deadline')) {
+        agentTrace.push({ agent: 'Smart Timetable & Resource Agent', action: 'Retrieved classroom digital twin and schedule', status: 'completed' });
+        answer = "Here is your academic schedule for today (**Semester 6 - CSE**):\n\n• **09:00 AM – 10:30 AM**: **CS-301 Algorithms & Data Structures** in **Hall B-204** with Prof. Marcus Vance *(Completed)*\n• **11:00 AM – 12:30 PM**: **CS-302 Distributed Systems Lab** in **Computing Lab 3** with Dr. Sarah Jenkins\n• **02:00 PM – 03:30 PM**: **CS-303 Web Architecture** in **Seminar Hall 1**\n\n📍 Hall B-204 is on Floor 2 of the Academic Block, equipped with smart projection and AC.";
+        chips = ['Find available study rooms', 'Check assignment deadlines', 'View Campus Digital Twin'];
+        richCard = {
+          type: 'timetable_card',
+          schedule: [
+            { time: '09:00 - 10:30 AM', subject: 'Algorithms & Data Structures (CS-301)', room: 'Hall B-204', faculty: 'Prof. Marcus Vance', status: 'completed' },
+            { time: '11:00 - 12:30 PM', subject: 'Distributed Systems Lab (CS-302)', room: 'Computing Lab 3', faculty: 'Dr. Sarah Jenkins', status: 'upcoming' }
+          ]
+        };
+      } else if (lower.includes('assignment') || lower.includes('homework') || lower.includes('deadline') || lower.includes('due') || lower.includes('study plan')) {
         topic = 'assignments';
-        answer = "You have **1 urgent assignment due**: \n• **Dynamic Programming Implementation (CS-301)** due in 48 hours.\n• **Kubernetes Deployment (CS-302)** has already been submitted.\nWould you like the Academic Recovery Agent to build a 2-hour study plan for it?";
-        chips = ['Generate revision plan', 'Open assignment portal', 'Check exam dates'];
+        agentTrace.push({ agent: 'Academic Recovery & Study Agent', action: 'Generated personalized revision priorities', status: 'completed' });
+        answer = "You have **1 urgent assignment due**:\n\n1. ⚠️ **Dynamic Programming & Graph Optimizations (CS-301)**\n   • **Deadline:** **Due in 48 hours** (Nov 16, 11:59 PM)\n   • **Weightage:** 50 Marks (Continuous Internal Assessment)\n\n2. ⏳ **Distributed Key-Value Store with Raft (CS-302)**\n   • **Deadline:** Due in 5 days (Nov 19, 11:59 PM)\n\n📅 **Recommended Action:** Allocate 2 hours tonight for the Bellman-Ford module to guarantee on-time submission.";
+        chips = ['Create my study timetable', 'Open assignment portal', 'Check exam dates'];
+        richCard = {
+          type: 'assignments_card',
+          assignments: [
+            { title: 'Dynamic Programming & Graph Optimizations', subject: 'CS-301 Algorithms', dueDate: 'In 2 days', urgency: 'urgent' },
+            { title: 'Distributed Key-Value Store with Raft', subject: 'CS-302 Distributed Systems', dueDate: 'In 5 days', urgency: 'medium' }
+          ]
+        };
       } else {
-        answer = `I am CampusFlow's Autonomous AI Support Copilot. I have live access to your student profile (Alex Rivera, 21BCE1042), attendance records, today's timetable, pending assignments, and campus events. How can I assist your studies today?`;
+        answer = `Hello! I am **CampusFlow AI** — your intelligent campus companion.\n\nI have real-time access to your student profile (Alex Rivera, 21BCE1042), attendance records, today's timetable, pending assignments, and campus events. How can I assist your campus life today?`;
+        chips = ['What is my attendance percentage?', 'Find upcoming college hackathons', 'What assignments are due this week?', 'What classes do I have today?'];
       }
+
+      // Record Assistant Message
+      const botMsg = {
+        id: 'msg-b-' + Date.now(),
+        conversation_id: convId,
+        sender: 'assistant',
+        role: 'assistant',
+        content: answer,
+        chips,
+        tool_calls: toolExecuted ? [toolExecuted] : [],
+        agent_trace: agentTrace,
+        rich_card: richCard,
+        created_at: new Date().toISOString()
+      };
+      store.ai_messages.push(botMsg);
+      saveStore(store);
 
       return {
         success: true,
         data: {
+          conversationId: convId,
+          message: botMsg,
           answer,
-          topic,
-          suggestedFollowUps: chips,
-          timestamp: new Date().toISOString()
+          chips,
+          agentTrace,
+          richCard,
+          toolExecuted
         }
       };
+    }
+  ),
+
+  ask: (query, context = {}) => withFallback(
+    () => api.post('/copilot/ask', { query, context }).then(r => r.data),
+    () => copilotApi.chat({ query, role: context?.role || 'student' })
+  ),
+
+  getConversations: () => withFallback(
+    () => api.get('/copilot/conversations').then(r => r.data),
+    () => {
+      const store = getStore();
+      if (!store.ai_conversations || store.ai_conversations.length === 0) {
+        store.ai_conversations = [
+          {
+            id: 'conv-default-01',
+            title: 'Academic & Hackathon Planning',
+            topic: 'academics',
+            is_pinned: true,
+            created_at: new Date(Date.now() - 86400000).toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ];
+        saveStore(store);
+      }
+      return { success: true, data: store.ai_conversations };
+    }
+  ),
+
+  createConversation: (title = 'New Conversation') => withFallback(
+    () => api.post('/copilot/conversations', { title }).then(r => r.data),
+    () => {
+      const store = getStore();
+      if (!store.ai_conversations) store.ai_conversations = [];
+      if (!store.ai_messages) store.ai_messages = [];
+
+      const newConv = {
+        id: 'conv-' + Date.now(),
+        title,
+        topic: 'general',
+        is_pinned: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      store.ai_conversations.unshift(newConv);
+
+      const greeting = {
+        id: 'msg-g-' + Date.now(),
+        conversation_id: newConv.id,
+        sender: 'assistant',
+        role: 'assistant',
+        content: "Hello! I'm CampusFlow AI, your intelligent campus companion. What would you like help with today?",
+        chips: [
+          "What's my attendance percentage?",
+          "What assignments are due this week?",
+          "Find upcoming college hackathons",
+          "What classes do I have today?"
+        ],
+        tool_calls: [],
+        agent_trace: [],
+        created_at: new Date().toISOString()
+      };
+      store.ai_messages.push(greeting);
+      saveStore(store);
+
+      return {
+        success: true,
+        data: {
+          conversation: newConv,
+          initialMessages: [greeting]
+        }
+      };
+    }
+  ),
+
+  getMessages: (conversationId) => withFallback(
+    () => api.get(`/copilot/conversations/${conversationId}/messages`).then(r => r.data),
+    () => {
+      const store = getStore();
+      if (!store.ai_messages) store.ai_messages = [];
+      const msgs = store.ai_messages.filter(m => m.conversation_id === conversationId);
+      if (msgs.length === 0) {
+        const defaultMsg = {
+          id: 'msg-def-' + Date.now(),
+          conversation_id: conversationId,
+          sender: 'assistant',
+          role: 'assistant',
+          content: "Hello! I am CampusFlow AI — your intelligent campus companion. How can I assist you today?",
+          chips: [
+            "What's my attendance percentage?",
+            "What assignments are due this week?",
+            "Find upcoming college hackathons",
+            "What classes do I have today?"
+          ],
+          tool_calls: [],
+          agent_trace: [],
+          created_at: new Date().toISOString()
+        };
+        store.ai_messages.push(defaultMsg);
+        saveStore(store);
+        return { success: true, data: [defaultMsg] };
+      }
+      return { success: true, data: msgs };
+    }
+  ),
+
+  deleteConversation: (conversationId) => withFallback(
+    () => api.delete(`/copilot/conversations/${conversationId}`).then(r => r.data),
+    () => {
+      const store = getStore();
+      if (store.ai_conversations) {
+        store.ai_conversations = store.ai_conversations.filter(c => c.id !== conversationId);
+      }
+      if (store.ai_messages) {
+        store.ai_messages = store.ai_messages.filter(m => m.conversation_id !== conversationId);
+      }
+      saveStore(store);
+      return { success: true, message: 'Conversation deleted' };
+    }
+  ),
+
+  clearMessages: (conversationId) => withFallback(
+    () => api.post(`/copilot/conversations/${conversationId}/clear`).then(r => r.data),
+    () => {
+      const store = getStore();
+      if (store.ai_messages) {
+        store.ai_messages = store.ai_messages.filter(m => m.conversation_id !== conversationId);
+      }
+      saveStore(store);
+      return { success: true, message: 'Messages cleared' };
+    }
+  ),
+
+  executeTool: (toolName, parameters) => withFallback(
+    () => api.post('/copilot/tool-execute', { toolName, parameters }).then(r => r.data),
+    () => {
+      if (toolName === 'register_for_event') {
+        return {
+          success: true,
+          data: {
+            registrationId: 'reg-' + Date.now(),
+            eventTitle: parameters?.eventTitle || 'Apex InnoHacks 2026',
+            status: 'confirmed',
+            message: 'You have been registered successfully!'
+          }
+        };
+      }
+      return { success: true, data: { status: 'completed', parameters } };
     }
   )
 };

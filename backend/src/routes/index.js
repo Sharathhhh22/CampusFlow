@@ -7,6 +7,7 @@ import caseRoutes from './case.routes.js';
 import decisionRoutes from './decision.routes.js';
 import analyticsRoutes from './analytics.routes.js';
 import adminRoutes from './admin.routes.js';
+import copilotRoutes from './copilot.routes.js';
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.use('/cases', caseRoutes);
 router.use('/cases', decisionRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/admin', adminRoutes);
+router.use('/copilot', copilotRoutes);
 
 export default router;
 

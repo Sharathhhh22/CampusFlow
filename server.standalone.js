@@ -499,7 +499,13 @@ const apiServer = http.createServer((req, res) => {
       return sendJSON(res, 200, { success: true, data: cls });
     }
     if (path.match(/^\/api\/v1\/classes\/([^/]+)\/subjects$/) && method === 'GET') {
-      return sendJSON(res, 200, { success: true, data: [] });
+      const classId = path.split('/')[4];
+      const targetClass = CLASSES.find(c => c.id === classId) || CLASSES[0];
+      const subjects = [
+        { id: 'sub-01', code: targetClass.code || 'CS-301', name: targetClass.name || 'Algorithms & Data Structures', credit_hours: 4 },
+        { id: 'sub-02', code: 'CS-302', name: 'Distributed Systems & Cloud Computing', credit_hours: 4 }
+      ];
+      return sendJSON(res, 200, { success: true, data: subjects });
     }
 
     // ---------------------------------------------------------
@@ -510,29 +516,57 @@ const apiServer = http.createServer((req, res) => {
     }
 
     if (path === '/api/v1/sessions' && method === 'POST') {
-      const { classId, durationMinutes = 10, room = 'Lecture Hall A' } = payload;
+      const classId = payload.class_id || payload.classId;
+      const subjectId = payload.subject_id || payload.subjectId;
+      const durationMinutes = payload.duration_minutes || payload.durationMinutes || 15;
+      const room = payload.room || 'Hall B-204';
+
       const targetClass = CLASSES.find(c => c.id === classId) || CLASSES[0];
       const rawToken = 'CF_QR_' + crypto.randomBytes(8).toString('hex').toUpperCase();
       const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+      const now = new Date();
+      const expiresAt = new Date(now.getTime() + durationMinutes * 60000);
+
       const newSession = {
         id: 'ses-' + Date.now(),
         class_id: targetClass.id,
         classId: targetClass.id,
         className: targetClass.name + ' (' + targetClass.code + ')',
+        subject_id: subjectId || 'sub-01',
+        subject_name: targetClass.name,
+        subject_code: targetClass.code,
         faculty_id: 'usr-faculty-01',
         facultyId: 'usr-faculty-01',
-        start_time: new Date().toISOString(),
-        startTime: new Date().toISOString(),
-        expires_at: new Date(Date.now() + durationMinutes * 60000).toISOString(),
-        expiresAt: new Date(Date.now() + durationMinutes * 60000).toISOString(),
+        start_time: now.toISOString(),
+        startTime: now.toISOString(),
+        starts_at: now.toISOString(),
+        expires_at: expiresAt.toISOString(),
+        expiresAt: expiresAt.toISOString(),
         status: 'active',
         tokenHash,
+        token_hash: tokenHash,
         rawToken,
+        token: rawToken,
         totalAttended: 0,
         room
       };
       SESSIONS.unshift(newSession);
-      return sendJSON(res, 201, { success: true, data: newSession, message: 'Dynamic QR attendance session launched' });
+      return sendJSON(res, 201, {
+        success: true,
+        data: newSession,
+        session: newSession,
+        message: 'Dynamic QR attendance session launched'
+      });
+    }
+
+    // Get Session Details
+    if (path.match(/^\/api\/v1\/sessions\/([^/]+)$/) && method === 'GET') {
+      const sessionId = path.split('/')[4];
+      const session = SESSIONS.find(s => s.id === sessionId) || SESSIONS[0];
+      if (session) {
+        return sendJSON(res, 200, { success: true, data: session, session });
+      }
+      return sendJSON(res, 404, { success: false, message: 'Session not found' });
     }
 
     // Close Session (handles both POST and PUT)
@@ -550,7 +584,13 @@ const apiServer = http.createServer((req, res) => {
     if (path.match(/^\/api\/v1\/sessions\/([^/]+)\/qr$/) && method === 'GET') {
       const sessionId = path.split('/')[4];
       const session = SESSIONS.find(s => s.id === sessionId) || SESSIONS[0];
-      return sendJSON(res, 200, { success: true, data: { token: session.rawToken, expiresAt: session.expiresAt } });
+      return sendJSON(res, 200, {
+        success: true,
+        data: {
+          token: session.rawToken || session.token,
+          expiresAt: session.expiresAt || session.expires_at
+        }
+      });
     }
 
     // ---------------------------------------------------------
