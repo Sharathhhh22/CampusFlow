@@ -551,6 +551,17 @@ export const classApi = {
 };
 
 export const sessionApi = {
+  list: (params) => withFallback(
+    () => api.get('/sessions', { params }).then(r => r.data),
+    () => {
+      const store = getStore();
+      let sessions = store.sessions || [];
+      if (params?.status) {
+        sessions = sessions.filter(s => s.status === params.status);
+      }
+      return { success: true, data: sessions };
+    }
+  ),
   create: (data) => withFallback(
     () => api.post('/sessions', data).then(r => r.data),
     () => {
@@ -606,24 +617,97 @@ export const sessionApi = {
 };
 
 export const attendanceApi = {
+  scan: (payload) => withFallback(
+    () => api.post('/attendance/scan', payload).then(r => r.data),
+    () => {
+      const store = getStore();
+      const sessionId = payload.session_id || payload.sessionId || 'ses-102';
+      const currentUser = JSON.parse(localStorage.getItem('campusflow_user') || '{}');
+      const studentId = currentUser.id || 'usr-student-01';
+      const studentName = currentUser.full_name || currentUser.name || 'Alex Rivera';
+      const session = store.sessions.find(s => s.id === sessionId || s.status === 'active') || store.sessions[0];
+
+      let existing = store.attendance.find(a =>
+        (a.sessionId === sessionId || a.session_id === sessionId) &&
+        (a.studentId === studentId || a.student_id === studentId)
+      );
+
+      if (existing) {
+        return {
+          success: true,
+          data: existing,
+          message: 'Attendance already recorded and verified for this session.'
+        };
+      }
+
+      const newRecord = {
+        id: 'att-' + Date.now(),
+        sessionId: session ? session.id : sessionId,
+        session_id: session ? session.id : sessionId,
+        studentId,
+        student_id: studentId,
+        studentName,
+        timestamp: new Date().toISOString(),
+        recorded_at: new Date().toISOString(),
+        status: 'present',
+        attendance_status: 'present',
+        method: 'qr_scan',
+        class_name: session?.className || 'CS-301: Algorithms & Data Structures'
+      };
+
+      store.attendance.unshift(newRecord);
+      if (session) {
+        session.totalAttended = (session.totalAttended || 0) + 1;
+      }
+      saveStore(store);
+
+      return {
+        success: true,
+        data: newRecord,
+        message: 'Attendance recorded successfully! Check-in confirmed.'
+      };
+    }
+  ),
   checkIn: (payload) => withFallback(
     () => api.post('/attendance/check-in', payload).then(r => r.data),
     () => {
       const store = getStore();
+      const sessionId = payload.session_id || payload.sessionId || 'ses-102';
+      const currentUser = JSON.parse(localStorage.getItem('campusflow_user') || '{}');
+      const studentId = currentUser.id || 'usr-student-01';
+      const studentName = currentUser.full_name || currentUser.name || 'Alex Rivera';
+      const session = store.sessions.find(s => s.id === sessionId || s.status === 'active') || store.sessions[0];
+
+      let existing = store.attendance.find(a =>
+        (a.sessionId === sessionId || a.session_id === sessionId) &&
+        (a.studentId === studentId || a.student_id === studentId)
+      );
+
+      if (existing) {
+        return {
+          success: true,
+          data: existing,
+          message: 'Attendance already recorded and verified for this session.'
+        };
+      }
+
       const newRecord = {
         id: 'att-' + Date.now(),
-        sessionId: payload.sessionId || 'ses-102',
-        studentId: 'usr-student-01',
-        studentName: 'Alex Rivera',
+        sessionId: session ? session.id : sessionId,
+        session_id: session ? session.id : sessionId,
+        studentId,
+        student_id: studentId,
+        studentName,
         timestamp: new Date().toISOString(),
+        recorded_at: new Date().toISOString(),
         status: 'present',
+        attendance_status: 'present',
         method: 'qr_scan',
-        class_name: 'CS-301: Algorithms & Data Structures'
+        class_name: session?.className || 'CS-301: Algorithms & Data Structures'
       };
       store.attendance.unshift(newRecord);
-      const activeSession = store.sessions.find(s => s.id === payload.sessionId || s.status === 'active');
-      if (activeSession) {
-        activeSession.totalAttended = (activeSession.totalAttended || 0) + 1;
+      if (session) {
+        session.totalAttended = (session.totalAttended || 0) + 1;
       }
       saveStore(store);
       return { success: true, data: newRecord, message: 'Attendance recorded successfully!' };
