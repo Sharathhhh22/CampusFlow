@@ -612,6 +612,17 @@ const apiServer = http.createServer((req, res) => {
       if (!session) {
         session = SESSIONS.find(s => s.status === 'active') || SESSIONS[0];
       }
+      if (!session) {
+        session = {
+          id: sessionId || 'ses-102',
+          className: 'Algorithms & Data Structures (CS-301)',
+          subject_name: 'Algorithms & Data Structures',
+          subject_code: 'CS-301',
+          status: 'active',
+          totalAttended: 12
+        };
+        SESSIONS.unshift(session);
+      }
 
       // 2. Check for duplicate scan
       const existingRecord = ATTENDANCE_RECORDS.find(r => 

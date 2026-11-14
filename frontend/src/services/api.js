@@ -822,6 +822,12 @@ export const attendanceApi = {
     () => api.post('/attendance/scan', payload).then(r => r.data),
     () => {
       const store = getStore();
+      if (!Array.isArray(store.attendance)) {
+        store.attendance = [];
+      }
+      if (!Array.isArray(store.sessions)) {
+        store.sessions = [];
+      }
       const sessionId = payload.session_id || payload.sessionId || 'ses-102';
       const currentUser = JSON.parse(localStorage.getItem('campusflow_user') || '{}');
       const studentId = currentUser.id || 'usr-student-01';

@@ -18,10 +18,14 @@ export const attendanceController = {
         device_info: validated.device_info || req.headers['user-agent']
       });
 
+      const message = record.already_recorded 
+        ? 'Attendance already recorded and verified for this session.' 
+        : 'Attendance recorded successfully! Check-in confirmed.';
+
       res.status(200).json({
         success: true,
         data: record,
-        message: 'Attendance recorded successfully! Check-in confirmed.'
+        message
       });
     } catch (err) {
       next(err);
