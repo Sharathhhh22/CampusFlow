@@ -220,3 +220,4 @@ CREATE POLICY "Read access for classrooms" ON classrooms FOR SELECT USING (true)
 CREATE POLICY "Read access for timetables" ON timetables FOR SELECT USING (true);
 CREATE POLICY "Read access for notices" ON campus_notices FOR SELECT USING (true);
 CREATE POLICY "Read access for lost and found" ON lost_found_items FOR SELECT USING (true);
+

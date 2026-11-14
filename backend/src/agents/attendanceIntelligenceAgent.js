@@ -53,3 +53,4 @@ Analyze the trajectory and return JSON:
       : `Continue standard class check-ins.`
   };
 }
+

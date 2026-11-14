@@ -96,30 +96,44 @@ export const ThemeToggle = ({ className = '' }) => {
   const { theme, setTheme, effectiveTheme } = useTheme();
   const [open, setOpen] = useState(false);
 
+  const toggleDirect = () => {
+    setTheme(effectiveTheme === 'dark' ? 'light' : 'dark');
+  };
+
   const options = [
     { value: 'light', label: 'Light Mode', icon: Sun },
     { value: 'dark', label: 'Dark Mode', icon: Moon },
     { value: 'system', label: 'System Default', icon: Monitor }
   ];
 
-  const currentIcon = effectiveTheme === 'dark' ? Moon : Sun;
-  const CurrentIconComponent = currentIcon;
+  const CurrentIcon = effectiveTheme === 'dark' ? Moon : Sun;
 
   return (
-    <div className={`relative inline-block ${className}`}>
+    <div className={`relative inline-flex items-center rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs ${className}`}>
       <button
-        onClick={() => setOpen(!open)}
-        title={`Theme: ${theme.charAt(0).toUpperCase() + theme.slice(1)} (Click to switch)`}
-        className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200/80 dark:border-slate-800 flex items-center justify-center bg-white dark:bg-slate-900 shadow-2xs"
-        aria-label="Toggle theme selection"
+        type="button"
+        onClick={toggleDirect}
+        title={`Current: ${theme.toUpperCase()} (Click to switch to ${effectiveTheme === 'dark' ? 'Light' : 'Dark'} Mode)`}
+        className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-l-xl transition flex items-center justify-center cursor-pointer"
+        aria-label="Toggle dark/light mode"
       >
-        <CurrentIconComponent className="w-4 h-4 text-sky-600 dark:text-sky-400 transition-transform duration-200" />
+        <CurrentIcon className="w-4 h-4 text-sky-600 dark:text-sky-400 transition-transform duration-200" />
+      </button>
+
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        title="More theme options (System / Dark / Light)"
+        className="px-1.5 py-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-r-xl border-l border-slate-200/60 dark:border-slate-800 transition text-[9px] cursor-pointer"
+        aria-label="Theme options"
+      >
+        ▼
       </button>
 
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 mt-2 w-44 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl z-50 p-1.5 space-y-0.5">
+          <div className="absolute right-0 top-full mt-2 w-44 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl z-50 p-1.5 space-y-0.5">
             <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
               Theme Mode
             </div>
@@ -188,3 +202,4 @@ export const ThemeSegmentedControl = ({ className = '' }) => {
     </div>
   );
 };
+

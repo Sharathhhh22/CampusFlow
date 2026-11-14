@@ -67,3 +67,4 @@ Generate personalized event recommendations in JSON:
     careerImpactNote: `Winning or presenting a prototype at Apex HackNova qualifies you for priority cloud internship interviews with partner tech companies.`
   };
 }
+

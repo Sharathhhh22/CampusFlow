@@ -63,3 +63,4 @@ Analyze and select the best room match in JSON:
     resourceNotes: `Equipped with dual HD projectors, gigabit campus Wi-Fi, and acoustic baffling.`
   };
 }
+

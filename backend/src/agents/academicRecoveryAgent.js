@@ -50,3 +50,4 @@ Generate an actionable Academic Recovery Plan in JSON:
     facultyAdvisory: 'Student is actively engaging with the recovery study schedule. Raft assignment completion anticipated within 48 hours.'
   };
 }
+

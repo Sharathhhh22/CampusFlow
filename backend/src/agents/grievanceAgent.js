@@ -61,3 +61,4 @@ Analyze the grievance and return JSON:
     acknowledgmentMessage: `Your grievance has been logged under ticket tracking. It has been routed directly to ${assignedDept} with expected review within 24-48 hours.`
   };
 }
+

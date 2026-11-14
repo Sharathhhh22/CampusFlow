@@ -55,3 +55,4 @@ Evaluate the conflict and generate an optimal rescheduling proposal in JSON:
     affectedStudentsCount: 64
   };
 }
+

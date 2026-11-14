@@ -1039,16 +1039,27 @@ const frontendHTML = `<!DOCTYPE html>
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {} }
+    };
+    (function() {
+      const saved = localStorage.getItem('campusflow_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (saved === 'dark') document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+    })();
+  </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
     body { font-family: 'Inter', sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors">
 
   <!-- Top Navigation & Role Switcher Bar -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
       <!-- Logo -->
@@ -1057,34 +1068,40 @@ const frontendHTML = `<!DOCTYPE html>
           <i data-lucide="shield-check" class="w-6 h-6"></i>
         </div>
         <div>
-          <span class="text-xl font-bold tracking-tight text-slate-900">Campus<span class="text-indigo-600">Flow</span></span>
-          <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">Trust & Recovery</span>
+          <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Campus<span class="text-indigo-600 dark:text-indigo-400">Flow</span></span>
+          <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">Trust & Recovery</span>
         </div>
       </div>
 
-      <!-- Live Demo Role Switcher -->
+      <!-- Live Demo Role Switcher & Theme Controls -->
       <div class="flex items-center space-x-3">
-        <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-medium">
-          <button id="role-btn-student" onclick="setRole('student')" class="px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 bg-white text-indigo-600 shadow-sm font-semibold">
+        <!-- Dark / Light Mode Switcher Button -->
+        <button id="theme-btn" onclick="toggleThemeStandalone()" title="Switch Light/Dark Mode" class="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-750 flex items-center space-x-1.5 text-xs font-bold transition shadow-xs cursor-pointer">
+          <i id="theme-btn-icon" data-lucide="moon" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
+          <span id="theme-btn-text" class="hidden sm:inline">Theme</span>
+        </button>
+
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium">
+          <button id="role-btn-student" onclick="setRole('student')" class="px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm font-semibold cursor-pointer">
             <i data-lucide="graduation-cap" class="w-4 h-4"></i>
             <span>Student</span>
           </button>
-          <button id="role-btn-faculty" onclick="setRole('faculty')" class="px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 text-slate-600 hover:text-slate-900">
+          <button id="role-btn-faculty" onclick="setRole('faculty')" class="px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer">
             <i data-lucide="user-check" class="w-4 h-4"></i>
             <span>Faculty</span>
           </button>
-          <button id="role-btn-admin" onclick="setRole('admin')" class="px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 text-slate-600 hover:text-slate-900">
+          <button id="role-btn-admin" onclick="setRole('admin')" class="px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer">
             <i data-lucide="sliders" class="w-4 h-4"></i>
             <span>Admin</span>
           </button>
         </div>
 
         <!-- User Profile Pill -->
-        <div class="hidden md:flex items-center pl-2 border-l border-slate-200 space-x-2">
-          <div id="user-avatar" class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-xs">AR</div>
+        <div class="hidden md:flex items-center pl-2 border-l border-slate-200 dark:border-slate-800 space-x-2">
+          <div id="user-avatar" class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400 font-bold flex items-center justify-center text-xs">AR</div>
           <div class="text-left leading-tight">
-            <div id="user-name" class="text-xs font-bold text-slate-900">Alex Rivera</div>
-            <div id="user-sub" class="text-[10px] text-slate-500 font-mono">21BCE1042</div>
+            <div id="user-name" class="text-xs font-bold text-slate-900 dark:text-white">Alex Rivera</div>
+            <div id="user-sub" class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">21BCE1042</div>
           </div>
         </div>
       </div>
@@ -1132,7 +1149,28 @@ const frontendHTML = `<!DOCTYPE html>
       admin: { name: 'Dr. Sarah Jenkins', role: 'Administrator', sub: 'Dean of Affairs', initials: 'SJ' }
     };
 
+    function toggleThemeStandalone() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const next = isDark ? 'light' : 'dark';
+      localStorage.setItem('campusflow_theme', next);
+      if (next === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('theme-btn-icon')?.setAttribute('data-lucide', 'sun');
+        if (document.getElementById('theme-btn-text')) document.getElementById('theme-btn-text').textContent = 'Light';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('theme-btn-icon')?.setAttribute('data-lucide', 'moon');
+        if (document.getElementById('theme-btn-text')) document.getElementById('theme-btn-text').textContent = 'Dark';
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
     async function init() {
+      const isDark = document.documentElement.classList.contains('dark');
+      if (isDark) {
+        document.getElementById('theme-btn-icon')?.setAttribute('data-lucide', 'sun');
+        if (document.getElementById('theme-btn-text')) document.getElementById('theme-btn-text').textContent = 'Light';
+      }
       await loadData();
       render();
     }
@@ -1521,31 +1559,37 @@ const frontendHTML = `<!DOCTYPE html>
     }
 
     // MODALS
-    function openScanModal() {
+    let currentCameraStream = null;
+
+    async function openScanModal() {
       const activeSession = store.sessions.find(s => s.status === 'active');
       const modal = document.getElementById('modal-container');
       const content = document.getElementById('modal-content');
       content.innerHTML = \`
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-          <h3 class="font-bold text-slate-900 text-base flex items-center space-x-2">
-            <i data-lucide="scan" class="w-5 h-5 text-indigo-600"></i>
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center space-x-2">
+            <i data-lucide="scan" class="w-5 h-5 text-indigo-600 dark:text-indigo-400"></i>
             <span>CampusFlow QR Scanner</span>
           </h3>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600">&times;</button>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg">&times;</button>
         </div>
         <div class="py-4 space-y-4">
-          <div class="w-full h-44 bg-slate-900 rounded-xl flex flex-col items-center justify-center text-white p-4 relative overflow-hidden">
-            <div class="w-32 h-32 border-2 border-dashed border-indigo-400 rounded-lg flex items-center justify-center animate-pulse">
-              <i data-lucide="camera" class="w-8 h-8 text-indigo-300"></i>
+          <div class="w-full h-48 bg-slate-950 rounded-xl flex flex-col items-center justify-center text-white p-2 relative overflow-hidden border border-slate-800">
+            <video id="modal-cam-video" autoplay playsinline class="w-full h-full object-cover rounded-lg hidden"></video>
+            
+            <div id="modal-cam-placeholder" class="flex flex-col items-center justify-center space-y-2 p-4 text-center">
+              <div class="w-20 h-20 border-2 border-dashed border-indigo-400 rounded-lg flex items-center justify-center animate-pulse">
+                <i data-lucide="camera" class="w-8 h-8 text-indigo-300"></i>
+              </div>
+              <span id="cam-status-msg" class="text-xs text-slate-300 font-medium">Requesting browser camera permissions...</span>
             </div>
-            <span class="text-xs text-slate-400 mt-2 font-mono">WebRTC Camera Stream Active</span>
           </div>
           
           <div class="space-y-2">
-            <label class="text-xs font-semibold text-slate-700">Or Enter / Simulate Session Token:</label>
+            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Session ID & Check-in Token:</label>
             <div class="flex space-x-2">
-              <input id="scan-token-input" type="text" value="\${activeSession ? activeSession.rawToken : 'ACTIVE_TOKEN_CS301'}" class="flex-1 font-mono text-xs px-3 py-2 border border-slate-300 rounded-lg bg-slate-50" />
-              <button onclick="submitScan()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-sm">
+              <input id="scan-token-input" type="text" value="\${activeSession ? (activeSession.rawToken || activeSession.token || 'ACTIVE_TOKEN_CS301') : 'ACTIVE_TOKEN_CS301'}" class="flex-1 font-mono text-xs px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white" />
+              <button onclick="submitScan()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-sm cursor-pointer">
                 Check In
               </button>
             </div>
@@ -1555,6 +1599,35 @@ const frontendHTML = `<!DOCTYPE html>
       \`;
       modal.classList.remove('hidden');
       lucide.createIcons();
+
+      // Automatically request camera access
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+          currentCameraStream = stream;
+          const video = document.getElementById('modal-cam-video');
+          const placeholder = document.getElementById('modal-cam-placeholder');
+          if (video && placeholder) {
+            video.srcObject = stream;
+            video.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+          }
+        } catch (err) {
+          const msg = document.getElementById('cam-status-msg');
+          if (msg) {
+            msg.innerHTML = '<span class="text-amber-400 font-semibold">Camera permission denied/unavailable.</span><br><span class="text-[11px] text-slate-400">Allow permissions in browser or use the token field below.</span>';
+          }
+        }
+      }
+    }
+
+    function closeModal() {
+      if (currentCameraStream) {
+        currentCameraStream.getTracks().forEach(t => t.stop());
+        currentCameraStream = null;
+      }
+      const modal = document.getElementById('modal-container');
+      modal.classList.add('hidden');
     }
 
     async function submitScan() {
@@ -1751,9 +1824,6 @@ const frontendHTML = `<!DOCTYPE html>
       }
     }
 
-    function closeModal() {
-      document.getElementById('modal-container').classList.add('hidden');
-    }
 
     function showToast(message, type = 'info') {
       const toast = document.getElementById('toast');
