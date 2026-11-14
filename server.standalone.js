@@ -9,27 +9,32 @@ const INSTITUTION = {
   id: 'inst-apex-01',
   name: 'Apex Institute of Technology',
   code: 'APEX',
+  slug: 'apex-tech'
 };
 
-const USERS = [
-  { id: 'usr-student-01', role: 'student', name: 'Alex Rivera', email: 'alex.rivera@apex.edu', regNo: '21BCE1042', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80' },
-  { id: 'usr-faculty-01', role: 'faculty', name: 'Prof. Marcus Vance', email: 'prof.vance@apex.edu', department: 'Computer Science & Engineering', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80' },
-  { id: 'usr-admin-01', role: 'admin', name: 'Dr. Sarah Jenkins', email: 'admin.jenkins@apex.edu', title: 'Dean of Academic Affairs', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80' }
+let USERS = [
+  { id: 'usr-student-01', role: 'student', full_name: 'Alex Rivera', name: 'Alex Rivera', email: 'alex.rivera@apex.edu', reg_number: '21BCE1042', institution_id: 'inst-apex-01', institution_name: 'Apex Institute of Technology', created_at: new Date(Date.now() - 30 * 86400000).toISOString() },
+  { id: 'usr-faculty-01', role: 'faculty', full_name: 'Prof. Marcus Vance', name: 'Prof. Marcus Vance', email: 'prof.vance@apex.edu', department: 'Computer Science & Engineering', institution_id: 'inst-apex-01', institution_name: 'Apex Institute of Technology', created_at: new Date(Date.now() - 60 * 86400000).toISOString() },
+  { id: 'usr-admin-01', role: 'admin', full_name: 'Dr. Sarah Jenkins', name: 'Dr. Sarah Jenkins', email: 'admin.jenkins@apex.edu', title: 'Dean of Academic Affairs', institution_id: 'inst-apex-01', institution_name: 'Apex Institute of Technology', created_at: new Date(Date.now() - 90 * 86400000).toISOString() }
 ];
 
-const CLASSES = [
-  { id: 'cls-cs301', code: 'CS-301', name: 'Algorithms & Data Structures', facultyId: 'usr-faculty-01', semester: 5, enrolledCount: 64 },
-  { id: 'cls-cs302', code: 'CS-302', name: 'Distributed Systems & Cloud', facultyId: 'usr-faculty-01', semester: 5, enrolledCount: 58 },
-  { id: 'cls-cs303', code: 'CS-303', name: 'Database Management Systems', facultyId: 'usr-faculty-01', semester: 4, enrolledCount: 62 }
+let CLASSES = [
+  { id: 'cls-cs301', code: 'CS-301', name: 'Algorithms & Data Structures', faculty_id: 'usr-faculty-01', semester: 5, enrolled_count: 64, room: 'Hall B-204' },
+  { id: 'cls-cs302', code: 'CS-302', name: 'Distributed Systems & Cloud', faculty_id: 'usr-faculty-01', semester: 5, enrolled_count: 58, room: 'Lab 3' },
+  { id: 'cls-cs303', code: 'CS-303', name: 'Database Management Systems', faculty_id: 'usr-faculty-01', semester: 4, enrolled_count: 62, room: 'Hall A-101' }
 ];
 
 let SESSIONS = [
   {
     id: 'ses-101',
+    class_id: 'cls-cs301',
     classId: 'cls-cs301',
     className: 'Algorithms & Data Structures (CS-301)',
+    faculty_id: 'usr-faculty-01',
     facultyId: 'usr-faculty-01',
+    start_time: new Date(Date.now() - 3600000).toISOString(),
     startTime: new Date(Date.now() - 3600000).toISOString(),
+    expires_at: new Date(Date.now() - 2700000).toISOString(),
     expiresAt: new Date(Date.now() - 2700000).toISOString(),
     status: 'closed',
     tokenHash: crypto.createHash('sha256').update('DEMO_TOKEN_101').digest('hex'),
@@ -39,10 +44,14 @@ let SESSIONS = [
   },
   {
     id: 'ses-102',
+    class_id: 'cls-cs301',
     classId: 'cls-cs301',
     className: 'Algorithms & Data Structures (CS-301)',
+    faculty_id: 'usr-faculty-01',
     facultyId: 'usr-faculty-01',
+    start_time: new Date(Date.now() - 600000).toISOString(),
     startTime: new Date(Date.now() - 600000).toISOString(),
+    expires_at: new Date(Date.now() + 1800000).toISOString(),
     expiresAt: new Date(Date.now() + 1800000).toISOString(),
     status: 'active',
     tokenHash: crypto.createHash('sha256').update('ACTIVE_TOKEN_CS301').digest('hex'),
@@ -53,27 +62,33 @@ let SESSIONS = [
 ];
 
 let ATTENDANCE_RECORDS = [
-  { id: 'att-01', sessionId: 'ses-101', studentId: 'usr-student-01', studentName: 'Alex Rivera', timestamp: new Date(Date.now() - 3400000).toISOString(), status: 'present', method: 'qr_scan' },
-  { id: 'att-02', sessionId: 'ses-101', studentId: 'usr-student-02', studentName: 'Maya Patel', timestamp: new Date(Date.now() - 3410000).toISOString(), status: 'present', method: 'qr_scan' },
-  { id: 'att-03', sessionId: 'ses-101', studentId: 'usr-student-03', studentName: 'Jordan Smith', timestamp: new Date(Date.now() - 3390000).toISOString(), status: 'present', method: 'qr_scan' }
+  { id: 'att-01', session_id: 'ses-101', sessionId: 'ses-101', student_id: 'usr-student-01', studentId: 'usr-student-01', studentName: 'Alex Rivera', timestamp: new Date(Date.now() - 3400000).toISOString(), status: 'present', method: 'qr_scan', class_name: 'CS-301: Algorithms & Data Structures' },
+  { id: 'att-02', session_id: 'ses-101', sessionId: 'ses-101', student_id: 'usr-student-02', studentId: 'usr-student-02', studentName: 'Maya Patel', timestamp: new Date(Date.now() - 3410000).toISOString(), status: 'present', method: 'qr_scan', class_name: 'CS-301: Algorithms & Data Structures' },
+  { id: 'att-03', session_id: 'ses-101', sessionId: 'ses-101', student_id: 'usr-student-03', studentId: 'usr-student-03', studentName: 'Jordan Smith', timestamp: new Date(Date.now() - 3390000).toISOString(), status: 'present', method: 'qr_scan', class_name: 'CS-301: Algorithms & Data Structures' }
 ];
 
 let CASES = [
   {
     id: 'rec-001',
     caseNumber: 'CF-2026-0842',
+    case_number: 'CF-2026-0842',
+    student_id: 'usr-student-01',
     studentId: 'usr-student-01',
     studentName: 'Alex Rivera',
     studentReg: '21BCE1042',
+    class_id: 'cls-cs301',
     classId: 'cls-cs301',
     className: 'CS-301: Algorithms & Data Structures',
+    session_id: 'ses-101',
     sessionId: 'ses-101',
     category: 'camera_failure',
     categoryLabel: 'Camera / QR Scanner Glitch',
     status: 'pending_faculty_review',
     systemType: 'campusflow_internal',
     description: 'My phone camera froze while attempting to focus on the dynamic QR code during the session. By the time I rebooted the browser tab, the 5-minute scanner window had expired.',
+    occurrence_time: new Date(Date.now() - 3500000).toISOString(),
     occurrenceTime: new Date(Date.now() - 3500000).toISOString(),
+    created_at: new Date(Date.now() - 3450000).toISOString(),
     createdAt: new Date(Date.now() - 3450000).toISOString(),
     aiDossier: {
       integrityRisk: 'low',
@@ -92,18 +107,24 @@ let CASES = [
   {
     id: 'rec-002',
     caseNumber: 'CF-2026-0843',
+    case_number: 'CF-2026-0843',
+    student_id: 'usr-student-01',
     studentId: 'usr-student-01',
     studentName: 'Alex Rivera',
     studentReg: '21BCE1042',
+    class_id: 'cls-cs302',
     classId: 'cls-cs302',
     className: 'CS-302: Distributed Systems',
+    session_id: null,
     sessionId: null,
     category: 'external_system_unverified',
     categoryLabel: 'Unverified External College Report',
     status: 'under_investigation',
     systemType: 'external_unverified',
     description: 'Reported scan failure in external college attendance portal. Terminal displayed connection timeout error.',
+    occurrence_time: new Date(Date.now() - 86400000).toISOString(),
     occurrenceTime: new Date(Date.now() - 86400000).toISOString(),
+    created_at: new Date(Date.now() - 86000000).toISOString(),
     createdAt: new Date(Date.now() - 86000000).toISOString(),
     aiDossier: {
       integrityRisk: 'unknown',
@@ -119,6 +140,11 @@ let CASES = [
   }
 ];
 
+let DECISIONS = [];
+let AUDIT_LOGS = [
+  { id: 'aud-01', action: 'system_initialized', actor_id: 'usr-admin-01', created_at: new Date().toISOString() }
+];
+
 let AGENT_RUNS = [
   { id: 'run-101', agentName: 'CoordinatorAgent', caseId: 'rec-001', durationMs: 1240, status: 'completed', steps: 4, timestamp: new Date(Date.now() - 3440000).toISOString() },
   { id: 'run-102', agentName: 'IntegrityAgent', caseId: 'rec-001', durationMs: 650, status: 'completed', riskAssigned: 'low', timestamp: new Date(Date.now() - 3445000).toISOString() },
@@ -131,7 +157,7 @@ function sendJSON(res, statusCode, data) {
   res.writeHead(statusCode, {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-demo-role'
   });
   res.end(JSON.stringify(data));
@@ -149,7 +175,7 @@ const apiServer = http.createServer((req, res) => {
   if (method === 'OPTIONS') {
     res.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-demo-role'
     });
     return res.end();
@@ -164,8 +190,118 @@ const apiServer = http.createServer((req, res) => {
       try { payload = JSON.parse(body); } catch (e) {}
     }
 
-    // Router
-    // 1. Health Endpoint
+    // ---------------------------------------------------------
+    // AUTH ROUTER
+    // ---------------------------------------------------------
+
+    // 1. POST /api/v1/auth/register
+    if (path === '/api/v1/auth/register' && method === 'POST') {
+      const { full_name, email, password } = payload;
+      if (!email || !full_name) {
+        return sendJSON(res, 400, { success: false, message: 'Full name and email are required.' });
+      }
+
+      // Check if user already exists
+      let user = USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (user) {
+        return sendJSON(res, 409, { success: false, message: 'An account with this email address already exists.' });
+      }
+
+      const newUser = {
+        id: 'usr-' + Date.now(),
+        role: 'student', // Public registration strictly student role
+        full_name,
+        name: full_name,
+        email,
+        reg_number: '21BCE' + Math.floor(1000 + Math.random() * 9000),
+        institution_id: INSTITUTION.id,
+        institution_name: INSTITUTION.name,
+        created_at: new Date().toISOString()
+      };
+      USERS.push(newUser);
+
+      const token = 'demo-jwt-student-' + newUser.id;
+      return sendJSON(res, 201, {
+        success: true,
+        message: 'Student account registered successfully',
+        data: {
+          profile: newUser,
+          token
+        }
+      });
+    }
+
+    // 2. POST /api/v1/auth/login
+    if (path === '/api/v1/auth/login' && method === 'POST') {
+      const { email, password } = payload;
+      if (!email) {
+        return sendJSON(res, 400, { success: false, message: 'Email is required' });
+      }
+
+      let user = USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (!user) {
+        // Auto-provision demo student if logging in with new credentials
+        const role = email.includes('faculty') ? 'faculty' :
+                     email.includes('admin') ? 'admin' : 'student';
+        const namePart = email.split('@')[0].replace(/[._]/g, ' ');
+        const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+        user = {
+          id: 'usr-' + Date.now(),
+          role,
+          full_name: formattedName,
+          name: formattedName,
+          email,
+          reg_number: '21BCE' + Math.floor(1000 + Math.random() * 9000),
+          institution_id: INSTITUTION.id,
+          institution_name: INSTITUTION.name,
+          created_at: new Date().toISOString()
+        };
+        USERS.push(user);
+      }
+
+      const token = 'demo-jwt-' + user.role + '-' + user.id;
+      return sendJSON(res, 200, {
+        success: true,
+        message: 'Login successful',
+        data: {
+          profile: user,
+          token
+        }
+      });
+    }
+
+    // 3. GET /api/v1/auth/me
+    if (path === '/api/v1/auth/me' && method === 'GET') {
+      const authHeader = req.headers.authorization || '';
+      const token = authHeader.replace('Bearer ', '');
+      let user = null;
+      if (token) {
+        const userId = token.split('-').slice(3).join('-');
+        user = USERS.find(u => u.id === userId);
+      }
+      if (!user) {
+        user = USERS[0]; // fallback to default student Alex Rivera
+      }
+      return sendJSON(res, 200, {
+        success: true,
+        data: user,
+        message: 'Profile retrieved successfully'
+      });
+    }
+
+    // 4. POST /api/v1/auth/logout
+    if (path === '/api/v1/auth/logout' && method === 'POST') {
+      return sendJSON(res, 200, { success: true, message: 'Logged out successfully' });
+    }
+
+    // 5. PATCH /api/v1/auth/profile
+    if (path === '/api/v1/auth/profile' && method === 'PATCH') {
+      return sendJSON(res, 200, { success: true, data: USERS[0], message: 'Profile updated' });
+    }
+
+    // ---------------------------------------------------------
+    // HEALTH ROUTER
+    // ---------------------------------------------------------
     if (path === '/api/v1/health' && method === 'GET') {
       return sendJSON(res, 200, {
         success: true,
@@ -177,23 +313,35 @@ const apiServer = http.createServer((req, res) => {
           institution: INSTITUTION.name,
           activeSessions: SESSIONS.filter(s => s.status === 'active').length,
           pendingCases: CASES.filter(c => c.status === 'pending_faculty_review').length,
+          totalUsers: USERS.length,
           agentsLoaded: ['CoordinatorAgent', 'IntegrityAgent', 'RecoveryAgent', 'EvidenceAgent'],
           timestamp: new Date().toISOString()
         }
       });
     }
 
-    // 2. Classes
+    // ---------------------------------------------------------
+    // CLASSES ROUTER
+    // ---------------------------------------------------------
     if (path === '/api/v1/classes' && method === 'GET') {
       return sendJSON(res, 200, { success: true, data: CLASSES });
     }
+    if (path.match(/^\/api\/v1\/classes\/([^/]+)$/) && method === 'GET') {
+      const classId = path.split('/')[4];
+      const cls = CLASSES.find(c => c.id === classId) || CLASSES[0];
+      return sendJSON(res, 200, { success: true, data: cls });
+    }
+    if (path.match(/^\/api\/v1\/classes\/([^/]+)\/subjects$/) && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: [] });
+    }
 
-    // 3. Sessions (GET)
+    // ---------------------------------------------------------
+    // SESSIONS ROUTER
+    // ---------------------------------------------------------
     if (path === '/api/v1/sessions' && method === 'GET') {
       return sendJSON(res, 200, { success: true, data: SESSIONS });
     }
 
-    // 4. Create Session (POST)
     if (path === '/api/v1/sessions' && method === 'POST') {
       const { classId, durationMinutes = 10, room = 'Lecture Hall A' } = payload;
       const targetClass = CLASSES.find(c => c.id === classId) || CLASSES[0];
@@ -201,10 +349,14 @@ const apiServer = http.createServer((req, res) => {
       const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
       const newSession = {
         id: 'ses-' + Date.now(),
+        class_id: targetClass.id,
         classId: targetClass.id,
         className: targetClass.name + ' (' + targetClass.code + ')',
+        faculty_id: 'usr-faculty-01',
         facultyId: 'usr-faculty-01',
+        start_time: new Date().toISOString(),
         startTime: new Date().toISOString(),
+        expires_at: new Date(Date.now() + durationMinutes * 60000).toISOString(),
         expiresAt: new Date(Date.now() + durationMinutes * 60000).toISOString(),
         status: 'active',
         tokenHash,
@@ -216,8 +368,8 @@ const apiServer = http.createServer((req, res) => {
       return sendJSON(res, 201, { success: true, data: newSession, message: 'Dynamic QR attendance session launched' });
     }
 
-    // 5. Close Session (PUT /api/v1/sessions/:id/close)
-    if (path.match(/^\/api\/v1\/sessions\/([^/]+)\/close$/) && method === 'PUT') {
+    // Close Session (handles both POST and PUT)
+    if (path.match(/^\/api\/v1\/sessions\/([^/]+)\/close$/) && (method === 'POST' || method === 'PUT')) {
       const sessionId = path.split('/')[4];
       const session = SESSIONS.find(s => s.id === sessionId);
       if (session) {
@@ -227,7 +379,16 @@ const apiServer = http.createServer((req, res) => {
       return sendJSON(res, 404, { success: false, message: 'Session not found' });
     }
 
-    // 6. Attendance Submit / Scan (POST)
+    // Get Session QR
+    if (path.match(/^\/api\/v1\/sessions\/([^/]+)\/qr$/) && method === 'GET') {
+      const sessionId = path.split('/')[4];
+      const session = SESSIONS.find(s => s.id === sessionId) || SESSIONS[0];
+      return sendJSON(res, 200, { success: true, data: { token: session.rawToken, expiresAt: session.expiresAt } });
+    }
+
+    // ---------------------------------------------------------
+    // ATTENDANCE ROUTER
+    // ---------------------------------------------------------
     if (path === '/api/v1/attendance/scan' && method === 'POST') {
       const { token, studentId = 'usr-student-01' } = payload;
       const session = SESSIONS.find(s => s.rawToken === token || s.tokenHash === token);
@@ -237,51 +398,76 @@ const apiServer = http.createServer((req, res) => {
       if (session.status !== 'active' || new Date() > new Date(session.expiresAt)) {
         return sendJSON(res, 400, { success: false, message: 'This QR session has expired or closed.' });
       }
-      // Check duplicate
-      const alreadyScanned = ATTENDANCE_RECORDS.some(r => r.sessionId === session.id && r.studentId === studentId);
+      const alreadyScanned = ATTENDANCE_RECORDS.some(r => (r.sessionId === session.id || r.session_id === session.id) && (r.studentId === studentId || r.student_id === studentId));
       if (alreadyScanned) {
         return sendJSON(res, 409, { success: false, message: 'Duplicate scan prevented: Attendance already recorded for this session.' });
       }
       const record = {
         id: 'att-' + Date.now(),
         sessionId: session.id,
+        session_id: session.id,
         studentId,
+        student_id: studentId,
         studentName: 'Alex Rivera',
         timestamp: new Date().toISOString(),
         status: 'present',
-        method: 'qr_scan'
+        method: 'qr_scan',
+        class_name: session.className
       };
       ATTENDANCE_RECORDS.push(record);
       session.totalAttended += 1;
       return sendJSON(res, 200, { success: true, data: record, message: 'Attendance recorded successfully!' });
     }
 
-    // 7. Attendance Records (GET)
     if (path === '/api/v1/attendance' && method === 'GET') {
       return sendJSON(res, 200, { success: true, data: ATTENDANCE_RECORDS });
     }
 
-    // 8. Cases (GET)
+    if (path === '/api/v1/attendance/history' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: ATTENDANCE_RECORDS });
+    }
+
+    if (path.match(/^\/api\/v1\/attendance\/session\/([^/]+)$/) && method === 'GET') {
+      const sessionId = path.split('/')[4];
+      const records = ATTENDANCE_RECORDS.filter(r => r.sessionId === sessionId || r.session_id === sessionId);
+      return sendJSON(res, 200, { success: true, data: records });
+    }
+
+    if (path === '/api/v1/attendance/report-issue' && method === 'POST') {
+      return sendJSON(res, 201, { success: true, message: 'Issue report received' });
+    }
+
+    // ---------------------------------------------------------
+    // CASES ROUTER
+    // ---------------------------------------------------------
     if (path === '/api/v1/cases' && method === 'GET') {
       return sendJSON(res, 200, { success: true, data: CASES });
     }
 
-    // 9. Submit Case (POST)
+    if (path.match(/^\/api\/v1\/cases\/([^/]+)$/) && method === 'GET') {
+      const caseId = path.split('/')[4];
+      const targetCase = CASES.find(c => c.id === caseId || c.caseNumber === caseId) || CASES[0];
+      return sendJSON(res, 200, { success: true, data: targetCase });
+    }
+
     if (path === '/api/v1/cases' && method === 'POST') {
       const { classId, category, description, occurrenceTime, isExternal = false } = payload;
       const targetClass = CLASSES.find(c => c.id === classId) || CLASSES[0];
       const caseNumber = 'CF-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
       
-      // Multi-Agent Workflow Simulation
       const newCase = {
         id: 'rec-' + Date.now(),
         caseNumber,
+        case_number: caseNumber,
         studentId: 'usr-student-01',
+        student_id: 'usr-student-01',
         studentName: 'Alex Rivera',
         studentReg: '21BCE1042',
         classId: targetClass.id,
+        class_id: targetClass.id,
         className: targetClass.code + ': ' + targetClass.name,
         sessionId: isExternal ? null : (SESSIONS[0]?.id || null),
+        session_id: isExternal ? null : (SESSIONS[0]?.id || null),
         category,
         categoryLabel: category === 'camera_failure' ? 'Camera / QR Scanner Glitch' :
                        category === 'network_timeout' ? 'Network Connectivity Timeout' :
@@ -290,7 +476,9 @@ const apiServer = http.createServer((req, res) => {
         systemType: isExternal ? 'external_unverified' : 'campusflow_internal',
         description,
         occurrenceTime: occurrenceTime || new Date().toISOString(),
+        occurrence_time: occurrenceTime || new Date().toISOString(),
         createdAt: new Date().toISOString(),
+        created_at: new Date().toISOString(),
         aiDossier: {
           integrityRisk: isExternal ? 'unknown' : 'low',
           integrityExplanation: isExternal ?
@@ -324,10 +512,10 @@ const apiServer = http.createServer((req, res) => {
       return sendJSON(res, 201, { success: true, data: newCase, message: 'Recovery case submitted. AI Agents have analyzed evidence and forwarded case to faculty.' });
     }
 
-    // 10. Faculty Decision (POST /api/v1/cases/:id/decision)
+    // Faculty Decision
     if (path.match(/^\/api\/v1\/cases\/([^/]+)\/decision$/) && method === 'POST') {
       const caseId = path.split('/')[4];
-      const targetCase = CASES.find(c => c.id === caseId);
+      const targetCase = CASES.find(c => c.id === caseId || c.caseNumber === caseId);
       if (!targetCase) {
         return sendJSON(res, 404, { success: false, message: 'Case not found' });
       }
@@ -344,18 +532,28 @@ const apiServer = http.createServer((req, res) => {
         reason
       };
 
-      // If approved, create verified attendance record
       if (decision === 'approve') {
         ATTENDANCE_RECORDS.push({
           id: 'att-recov-' + Date.now(),
           sessionId: targetCase.sessionId || 'ses-recovered',
+          session_id: targetCase.sessionId || 'ses-recovered',
           studentId: targetCase.studentId,
+          student_id: targetCase.studentId,
           studentName: targetCase.studentName,
           timestamp: new Date().toISOString(),
           status: 'verified_recovery',
-          method: 'faculty_recovery_approval'
+          method: 'faculty_recovery_approval',
+          class_name: targetCase.className
         });
       }
+
+      DECISIONS.push({
+        id: 'dec-' + Date.now(),
+        case_id: targetCase.id,
+        outcome: targetCase.status,
+        reason,
+        created_at: new Date().toISOString()
+      });
 
       return sendJSON(res, 200, {
         success: true,
@@ -364,12 +562,22 @@ const apiServer = http.createServer((req, res) => {
       });
     }
 
-    // 11. Analytics
+    if (path.match(/^\/api\/v1\/cases\/([^/]+)\/additional-information$/) && method === 'POST') {
+      return sendJSON(res, 200, { success: true, message: 'Additional information recorded' });
+    }
+
+    if (path.match(/^\/api\/v1\/cases\/([^/]+)\/agent-activity$/) && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: AGENT_RUNS });
+    }
+
+    // ---------------------------------------------------------
+    // ANALYTICS ROUTER
+    // ---------------------------------------------------------
     if (path === '/api/v1/analytics/summary' && method === 'GET') {
       return sendJSON(res, 200, {
         success: true,
         data: {
-          totalStudents: 184,
+          totalStudents: USERS.filter(u => u.role === 'student').length + 180,
           totalSessions: SESSIONS.length,
           validSubmissions: ATTENDANCE_RECORDS.length,
           totalCases: CASES.length,
@@ -380,6 +588,44 @@ const apiServer = http.createServer((req, res) => {
           integrityStats: { lowRisk: 88, mediumRisk: 9, highRisk: 3 }
         }
       });
+    }
+
+    if (path === '/api/v1/analytics/issues' && method === 'GET') {
+      return sendJSON(res, 200, {
+        success: true,
+        data: [
+          { category: 'camera_failure', count: 12, label: 'Camera / QR Scanner Glitch' },
+          { category: 'network_timeout', count: 8, label: 'Network Connection Timeout' },
+          { category: 'session_expired', count: 5, label: 'Premature Session Closure' },
+          { category: 'external_system_unverified', count: 3, label: 'Unverified External Portal' }
+        ]
+      });
+    }
+
+    if (path === '/api/v1/analytics/recovery' && method === 'GET') {
+      return sendJSON(res, 200, {
+        success: true,
+        data: {
+          approved: CASES.filter(c => c.status === 'approved').length,
+          rejected: CASES.filter(c => c.status === 'rejected').length,
+          pending: CASES.filter(c => c.status === 'pending_faculty_review').length
+        }
+      });
+    }
+
+    // ---------------------------------------------------------
+    // ADMIN ROUTER
+    // ---------------------------------------------------------
+    if (path === '/api/v1/admin/users' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: USERS });
+    }
+
+    if (path === '/api/v1/admin/institutions' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: [INSTITUTION] });
+    }
+
+    if (path === '/api/v1/admin/audit-logs' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: AUDIT_LOGS });
     }
 
     // Default 404
@@ -395,6 +641,7 @@ apiServer.listen(5000, '0.0.0.0', () => {
 // -------------------------------------------------------------
 // 2. FRONTEND WEB PORTAL SERVER (PORT 5173)
 // -------------------------------------------------------------
+// Serves SPA HTML for all web routes
 const frontendHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -409,7 +656,6 @@ const frontendHTML = `<!DOCTYPE html>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
     body { font-family: 'Inter', sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
-    .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
@@ -429,7 +675,7 @@ const frontendHTML = `<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- Live Demo Role Switcher (Mandatory Requirement) -->
+      <!-- Live Demo Role Switcher -->
       <div class="flex items-center space-x-3">
         <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-medium">
           <button id="role-btn-student" onclick="setRole('student')" class="px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 bg-white text-indigo-600 shadow-sm font-semibold">
@@ -471,10 +717,7 @@ const frontendHTML = `<!DOCTYPE html>
 
   <!-- Main View Container -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    
-    <!-- Dynamic View Injected Here -->
     <div id="app-view"></div>
-
   </main>
 
   <!-- Global Modal for QR Scanner / Review / Actions -->
@@ -487,7 +730,6 @@ const frontendHTML = `<!DOCTYPE html>
 
   <!-- App Client Script -->
   <script>
-    // App State
     let currentRole = 'student';
     let currentTab = 'dashboard';
     let store = {
@@ -503,13 +745,11 @@ const frontendHTML = `<!DOCTYPE html>
       admin: { name: 'Dr. Sarah Jenkins', role: 'Administrator', sub: 'Dean of Affairs', initials: 'SJ' }
     };
 
-    // Initialize App
     async function init() {
       await loadData();
       render();
     }
 
-    // Fetch data from local backend API (port 5000)
     async function loadData() {
       try {
         const [sesRes, casesRes, attRes, clsRes] = await Promise.all([
@@ -523,11 +763,10 @@ const frontendHTML = `<!DOCTYPE html>
         store.attendance = attRes.data || [];
         store.classes = clsRes.data || [];
       } catch (err) {
-        console.warn('API fetch warning, fallback to cached state', err);
+        console.warn('API fetch warning', err);
       }
     }
 
-    // Change Demo Role
     function setRole(role) {
       currentRole = role;
       document.querySelectorAll('[id^="role-btn-"]').forEach(btn => {
@@ -551,7 +790,6 @@ const frontendHTML = `<!DOCTYPE html>
       render();
     }
 
-    // Render Views based on role and tab
     function render() {
       const container = document.getElementById('app-view');
       if (currentRole === 'student') {
@@ -564,13 +802,10 @@ const frontendHTML = `<!DOCTYPE html>
       lucide.createIcons();
     }
 
-    // ---------------------------------------------------------
     // STUDENT VIEW
-    // ---------------------------------------------------------
     function renderStudentView() {
       const activeSession = store.sessions.find(s => s.status === 'active');
       return \`
-        <!-- Student Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-200 gap-4">
           <div>
             <h1 class="text-2xl font-bold text-slate-900">Student Attendance Hub</h1>
@@ -588,7 +823,6 @@ const frontendHTML = `<!DOCTYPE html>
           </div>
         </div>
 
-        <!-- Metrics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase">
@@ -626,7 +860,6 @@ const frontendHTML = `<!DOCTYPE html>
           </div>
         </div>
 
-        <!-- Recent Recovery Cases Section -->
         <div class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="p-5 border-b border-slate-100 flex items-center justify-between">
             <div class="flex items-center space-x-2">
@@ -652,7 +885,6 @@ const frontendHTML = `<!DOCTYPE html>
                 </div>
                 <p class="text-xs text-slate-600 mt-2 bg-slate-50 p-2.5 rounded-lg border border-slate-100">\${c.description}</p>
                 
-                <!-- AI Agent Findings Drawer -->
                 \${c.aiDossier ? \`
                   <div class="mt-3 bg-indigo-50/50 border border-indigo-100 rounded-xl p-3 text-xs">
                     <div class="font-semibold text-indigo-900 flex items-center space-x-1.5 mb-1">
@@ -667,7 +899,6 @@ const frontendHTML = `<!DOCTYPE html>
                   </div>
                 \` : ''}
 
-                <!-- Faculty Human Decision -->
                 \${c.decision ? \`
                   <div class="mt-2 text-xs font-medium p-2.5 rounded-lg \${c.decision.outcome === 'approved' ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-rose-50 text-rose-900 border border-rose-200'}">
                     <strong>Faculty Resolution by \${c.decision.decidedBy}:</strong> \${c.decision.reason}
@@ -680,15 +911,12 @@ const frontendHTML = `<!DOCTYPE html>
       \`;
     }
 
-    // ---------------------------------------------------------
     // FACULTY VIEW
-    // ---------------------------------------------------------
     function renderFacultyView() {
       const activeSession = store.sessions.find(s => s.status === 'active');
       const pendingCases = store.cases.filter(c => c.status === 'pending_faculty_review');
 
       return \`
-        <!-- Faculty Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-200 gap-4">
           <div>
             <h1 class="text-2xl font-bold text-slate-900">Faculty Attendance Command Center</h1>
@@ -702,7 +930,6 @@ const frontendHTML = `<!DOCTYPE html>
           </div>
         </div>
 
-        <!-- Active Session Card (if exists) -->
         \${activeSession ? \`
           <div class="mt-6 bg-gradient-to-r from-indigo-900 to-slate-900 rounded-2xl text-white p-6 shadow-xl relative overflow-hidden">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
@@ -721,10 +948,8 @@ const frontendHTML = `<!DOCTYPE html>
                 </div>
               </div>
 
-              <!-- Live SVG QR Code Display -->
               <div class="bg-white p-4 rounded-xl shadow-md text-slate-900 flex flex-col items-center">
                 <div class="w-36 h-36 bg-slate-900 rounded-lg flex items-center justify-center p-2">
-                  <!-- Simulated SVG QR Matrix -->
                   <svg class="w-full h-full text-white" viewBox="0 0 100 100" fill="currentColor">
                     <rect x="10" y="10" width="25" height="25" />
                     <rect x="65" y="10" width="25" height="25" />
@@ -744,7 +969,6 @@ const frontendHTML = `<!DOCTYPE html>
           </div>
         \` : ''}
 
-        <!-- Pending Decision Cases Queue (Mandatory Human Decision Center) -->
         <div class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="p-5 border-b border-slate-100 flex items-center justify-between">
             <div class="flex items-center space-x-2">
@@ -780,7 +1004,6 @@ const frontendHTML = `<!DOCTYPE html>
                         <strong>Student Claim:</strong> "\${c.description}"
                       </div>
 
-                      <!-- AI Investigation Dossier Box -->
                       <div class="bg-indigo-50/80 border border-indigo-200/80 rounded-xl p-4 text-xs space-y-2 mt-3">
                         <div class="flex items-center justify-between text-indigo-950 font-bold border-b border-indigo-200/50 pb-1.5">
                           <span class="flex items-center space-x-1.5">
@@ -806,7 +1029,6 @@ const frontendHTML = `<!DOCTYPE html>
                       </div>
                     </div>
 
-                    <!-- Faculty Human Decision Action Box -->
                     <div class="lg:w-80 bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3 flex-shrink-0">
                       <div class="text-xs font-bold text-slate-900 flex items-center space-x-1">
                         <i data-lucide="gavel" class="w-3.5 h-3.5 text-slate-600"></i>
@@ -834,9 +1056,7 @@ const frontendHTML = `<!DOCTYPE html>
       \`;
     }
 
-    // ---------------------------------------------------------
     // ADMIN VIEW
-    // ---------------------------------------------------------
     function renderAdminView() {
       return \`
         <div class="pb-6 border-b border-slate-200">
@@ -847,7 +1067,7 @@ const frontendHTML = `<!DOCTYPE html>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
             <div class="text-slate-500 text-xs font-semibold uppercase">Total Campus Students</div>
-            <div class="text-2xl font-bold text-slate-900 mt-2">1,248</div>
+            <div class="text-2xl font-bold text-slate-900 mt-2">\${USERS.filter(u => u.role === 'student').length + 180}</div>
             <div class="text-xs text-slate-500 mt-1">3 Active Departments</div>
           </div>
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
@@ -867,7 +1087,6 @@ const frontendHTML = `<!DOCTYPE html>
           </div>
         </div>
 
-        <!-- Agent Runs Telemetry Table -->
         <div class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="p-5 border-b border-slate-100 flex items-center justify-between">
             <div class="flex items-center space-x-2">
@@ -914,9 +1133,7 @@ const frontendHTML = `<!DOCTYPE html>
       \`;
     }
 
-    // ---------------------------------------------------------
-    // MODALS & ACTIONS
-    // ---------------------------------------------------------
+    // MODALS
     function openScanModal() {
       const activeSession = store.sessions.find(s => s.status === 'active');
       const modal = document.getElementById('modal-container');
@@ -1105,7 +1322,7 @@ const frontendHTML = `<!DOCTYPE html>
     async function closeSession(sessionId) {
       try {
         const res = await fetch('http://localhost:5000/api/v1/sessions/' + sessionId + '/close', {
-          method: 'PUT'
+          method: 'POST'
         }).then(r => r.json());
 
         if (res.success) {
@@ -1168,7 +1385,6 @@ const frontendHTML = `<!DOCTYPE html>
       }, 3500);
     }
 
-    // Start App
     init();
   </script>
 </body>
@@ -1182,4 +1398,3 @@ const webServer = http.createServer((req, res) => {
 webServer.listen(5173, '0.0.0.0', () => {
   console.log('✅ CampusFlow Web Application is LIVE at http://localhost:5173');
 });
-
