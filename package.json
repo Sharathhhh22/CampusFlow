@@ -1,0 +1,15 @@
+{
+  "name": "campusflow",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "CampusFlow — Agentic AI Attendance Trust & Recovery Platform",
+  "scripts": {
+    "dev:backend": "npm.cmd --prefix backend run dev",
+    "dev:frontend": "npm.cmd --prefix frontend run dev",
+    "build:frontend": "npm.cmd --prefix frontend run build",
+    "test:backend": "npm.cmd --prefix backend test",
+    "migrate": "npm.cmd --prefix backend run migrate",
+    "seed": "npm.cmd --prefix backend run seed"
+  }
+}
