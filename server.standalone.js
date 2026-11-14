@@ -152,6 +152,169 @@ let AGENT_RUNS = [
   { id: 'run-104', agentName: 'EvidenceAgent', caseId: 'rec-001', durationMs: 740, status: 'completed', itemsOrganized: 4, timestamp: new Date(Date.now() - 3441000).toISOString() }
 ];
 
+let EVENTS = [
+  {
+    id: 'evt-001',
+    title: 'Apex InnoHacks 2026: Campus Smart Hackathon',
+    short_description: '36-hour national level hackathon focused on Agentic AI, Smart IoT campuses, and sustainable green computing with ₹1,50,000 in prizes.',
+    description: 'Apex InnoHacks 2026 brings together the brightest student minds to engineer real-world software & IoT solutions. Track categories include Multi-Agent Autonomous Systems, Decentralized Campus Credentials, and Clean Energy Smart Grids.',
+    category: 'hackathon',
+    organizer: 'Department of Computer Science & Engineering',
+    organizing_department: 'Computer Science & Engineering',
+    faculty_coordinator: 'Prof. Marcus Vance',
+    student_coordinator: 'Rohan Sharma (Lead GDG)',
+    venue: 'Auditorium Hall 1 & Advanced Computing Lab',
+    mode: 'offline',
+    start_date: new Date(Date.now() + 5 * 86400000).toISOString(),
+    end_date: new Date(Date.now() + 7 * 86400000).toISOString(),
+    registration_deadline: new Date(Date.now() + 3 * 86400000).toISOString(),
+    capacity: 150,
+    registered_count: 118,
+    min_team_size: 2,
+    max_team_size: 4,
+    is_published: true,
+    status: 'published',
+    cover_image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1000&q=80',
+    prizes: '1st Prize: ₹75,000 + Cloud Credits | 2nd Prize: ₹45,000 | 3rd Prize: ₹30,000',
+    rules: 'All code must be written during the hackathon.'
+  },
+  {
+    id: 'evt-002',
+    title: 'Hands-on Agentic AI & LLM Orchestration Workshop',
+    short_description: 'Master LangGraph, Google Gemini API, and autonomous multi-agent tool execution in a comprehensive 2-day hands-on bootcamp.',
+    description: 'Deep dive into architecting resilient agent swarms, memory systems, and deterministic tool execution pipelines.',
+    category: 'workshop',
+    organizer: 'AI & Data Science Student Council',
+    organizing_department: 'Artificial Intelligence & Machine Learning',
+    faculty_coordinator: 'Dr. Elena Rostova',
+    student_coordinator: 'Priya Sundaram',
+    venue: 'Turing Computing Lab 402',
+    mode: 'hybrid',
+    start_date: new Date(Date.now() + 2 * 86400000).toISOString(),
+    end_date: new Date(Date.now() + 3 * 86400000).toISOString(),
+    registration_deadline: new Date(Date.now() + 1 * 86400000).toISOString(),
+    capacity: 60,
+    registered_count: 54,
+    min_team_size: 1,
+    max_team_size: 1,
+    is_published: true,
+    status: 'published',
+    cover_image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80',
+    prizes: 'Certificate of Excellence + Google Cloud $100 Credits'
+  }
+];
+
+let EVENT_REGISTRATIONS = [
+  {
+    id: 'reg-001',
+    event_id: 'evt-001',
+    user_id: 'usr-student-01',
+    status: 'confirmed',
+    registration_type: 'team',
+    team_name: 'VectorZero',
+    team_members: ['Alex Rivera (alex.rivera@apex.edu)', 'Maya Patel (maya.p@apex.edu)'],
+    created_at: new Date(Date.now() - 86400000).toISOString()
+  }
+];
+
+let CLASSROOMS = [
+  { id: 'rm-101', code: 'A-101', name: 'Lecture Hall A-101', building: 'Engineering Block A', floor: 1, capacity: 80, type: 'lecture_hall', status: 'available', has_projector: true, has_ac: true, has_smartboard: true, has_video_conferencing: true, power_load_kw: 3.4, temperature_c: 22.4, current_occupancy: 0 },
+  { id: 'rm-204', code: 'B-204', name: 'Hall B-204', building: 'Science & Computing Block B', floor: 2, capacity: 70, type: 'lecture_hall', status: 'occupied', has_projector: true, has_ac: true, has_smartboard: true, has_video_conferencing: false, current_course: 'CS-301: Algorithms & Data Structures', current_faculty: 'Prof. Marcus Vance', power_load_kw: 4.8, temperature_c: 23.8, current_occupancy: 64 },
+  { id: 'rm-302', code: 'B-302', name: 'AI & GPU Research Lab', building: 'Science & Computing Block B', floor: 3, capacity: 45, type: 'computing_lab', status: 'occupied', has_projector: true, has_ac: true, has_smartboard: true, has_video_conferencing: true, current_course: 'CS-302: Distributed Systems & Cloud', current_faculty: 'Dr. Elena Rostova', power_load_kw: 12.2, temperature_c: 20.1, current_occupancy: 42 }
+];
+
+let NOTICES = [
+  {
+    id: 'ntc-001',
+    title: 'Mid-Semester Examinations Schedule & Seating Allotment Fall 2026',
+    category: 'academic',
+    urgency: 'high',
+    target_audience: 'all_students',
+    department: 'Controller of Examinations',
+    publish_date: new Date(Date.now() - 48 * 3600000).toISOString(),
+    summary: '• Mid-Semester examinations commence on November 24, 2026 across two daily slots.\n• Hall tickets verified with biometrics/QR scanning at entrance doors.\n• Students with attendance below 75% must resolve pending recovery dossiers before Nov 20.',
+    action_items: [
+      'Download and print hall ticket before Nov 20, 2026',
+      'Verify room allocation 24 hours prior to first exam'
+    ],
+    deadlines: [
+      { item: 'Hall Ticket Verification Window Closes', date: '2026-11-20T17:00:00Z' }
+    ]
+  }
+];
+
+let GRIEVANCES = [
+  {
+    id: 'grv-001',
+    ticket_number: 'GRV-2026-042',
+    student_id: 'usr-student-01',
+    student_name: 'Alex Rivera',
+    category: 'infrastructure',
+    title: 'Projector HDMI flickering continuously in Hall B-204',
+    description: 'The ceiling projector cuts out during slides, making data structures code walkthroughs difficult to see.',
+    department_assigned: 'Campus Facilities & IT Services',
+    urgency: 'medium',
+    status: 'in_progress',
+    sla_hours: 24,
+    created_at: new Date(Date.now() - 6 * 3600000).toISOString(),
+    resolution_notes: 'Technician dispatched at 1:30 PM. High-speed 4K fiber HDMI cable replacement scheduled.'
+  }
+];
+
+let LOST_FOUND = [
+  {
+    id: 'lf-001',
+    type: 'found',
+    title: 'Lenovo ThinkPad 65W USB-C Charger',
+    description: 'Black AC adapter left plugged into wall socket next to desk #14 in Computing Lab 3.',
+    location_found: 'Science Block B, Computing Lab 3',
+    reported_by: 'Campus Security Desk (Officer Balan)',
+    reported_at: new Date(Date.now() - 14 * 3600000).toISOString(),
+    status: 'available_for_claim',
+    image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=400&q=80',
+    ai_tags: ['charger', 'usb-c', 'lenovo', 'black']
+  }
+];
+
+let ORCHESTRATOR_TASKS = [
+  {
+    id: 'orch-task-101',
+    title: 'Faculty Absence Schedule Reallocation',
+    trigger_event: 'Prof. Marcus Vance logged medical emergency for CS-301 (10:00 AM)',
+    status: 'pending_approval',
+    requires_admin_approval: true,
+    urgency: 'high',
+    created_at: new Date(Date.now() - 15 * 60000).toISOString(),
+    agents_involved: ['Timetable Agent', 'Resource Agent', 'Notification Agent'],
+    summary: 'Timetable conflict detected. Proxy faculty Dr. Sarah Jenkins identified; Hall B-204 confirmed available. Ready to notify 64 enrolled students upon Dean authorization.',
+    steps: [
+      { agent: 'Timetable Agent', action: 'Detected unstaffed session CS-301 at 10:00 AM', status: 'completed' },
+      { agent: 'Resource Agent', action: 'Verified Hall B-204 is clear of conflicting bookings', status: 'completed' },
+      { agent: 'Timetable Agent', action: 'Selected qualified proxy faculty Dr. Sarah Jenkins', status: 'completed' },
+      { agent: 'Autonomous Orchestrator', action: 'Generated human-in-the-loop approval ticket for Administrator', status: 'waiting_for_approval' },
+      { agent: 'Notification Agent', action: 'Standby: Send push alerts & SMS to 64 enrolled students', status: 'queued' }
+    ],
+    proposed_action: {
+      course: 'CS-301: Algorithms & Data Structures',
+      original_faculty: 'Prof. Marcus Vance',
+      proxy_faculty: 'Dr. Sarah Jenkins',
+      room: 'Hall B-204',
+      time: 'Today, 10:00 AM - 11:30 AM',
+      notification_target: '64 Students Enrolled in Section A'
+    }
+  }
+];
+
+let TIMETABLES = [
+  { id: 'tt-1', day: 'Monday', time: '09:00 - 10:30', course_code: 'CS-301', course_name: 'Algorithms & Data Structures', room: 'Hall B-204', faculty: 'Prof. Marcus Vance', type: 'Lecture' },
+  { id: 'tt-2', day: 'Monday', time: '11:00 - 12:30', course_code: 'CS-302', course_name: 'Distributed Systems & Cloud', room: 'Lab 3', faculty: 'Prof. Marcus Vance', type: 'Lab' }
+];
+
+let ASSIGNMENTS = [
+  { id: 'asg-01', course_code: 'CS-301', title: 'Dynamic Programming & Graph Traversal Implementation', due_date: new Date(Date.now() + 48 * 3600000).toISOString(), status: 'pending', max_marks: 50 },
+  { id: 'asg-02', course_code: 'CS-302', title: 'Kubernetes Cluster Deployment on GCP', due_date: new Date(Date.now() + 96 * 3600000).toISOString(), status: 'submitted', max_marks: 30 }
+];
+
 // Helper: send JSON
 function sendJSON(res, statusCode, data) {
   res.writeHead(statusCode, {
@@ -626,6 +789,199 @@ const apiServer = http.createServer((req, res) => {
 
     if (path === '/api/v1/admin/audit-logs' && method === 'GET') {
       return sendJSON(res, 200, { success: true, data: AUDIT_LOGS });
+    }
+
+    // ---------------------------------------------------------
+    // EVENTS HUB ROUTER
+    // ---------------------------------------------------------
+    if (path === '/api/v1/events' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: EVENTS });
+    }
+    if (path === '/api/v1/events' && method === 'POST') {
+      const newEvt = {
+        id: 'evt-' + Date.now(),
+        ...payload,
+        registered_count: 0,
+        status: 'published',
+        is_published: true
+      };
+      EVENTS.unshift(newEvt);
+      return sendJSON(res, 201, { success: true, data: newEvt, message: 'Event published' });
+    }
+    if (path === '/api/v1/events/recommendations' && method === 'GET') {
+      return sendJSON(res, 200, {
+        success: true,
+        data: {
+          recommendedEvents: EVENTS.slice(0, 2),
+          matchReason: 'Top matches for Computer Science & Engineering students interested in Autonomous AI.'
+        }
+      });
+    }
+    if (path.match(/^\/api\/v1\/events\/([^/]+)$/) && method === 'GET') {
+      const evtId = path.split('/')[4];
+      const evt = EVENTS.find(e => e.id === evtId) || EVENTS[0];
+      return sendJSON(res, 200, { success: true, data: evt });
+    }
+    if (path.match(/^\/api\/v1\/events\/([^/]+)\/register$/) && method === 'POST') {
+      const evtId = path.split('/')[4];
+      const newReg = {
+        id: 'reg-' + Date.now(),
+        event_id: evtId,
+        user_id: 'usr-student-01',
+        registration_type: payload.registrationType || 'individual',
+        team_name: payload.teamName || null,
+        team_members: payload.teamMembers || ['Alex Rivera'],
+        status: 'confirmed',
+        created_at: new Date().toISOString()
+      };
+      EVENT_REGISTRATIONS.push(newReg);
+      const target = EVENTS.find(e => e.id === evtId);
+      if (target) target.registered_count = (target.registered_count || 0) + 1;
+      return sendJSON(res, 201, { success: true, data: newReg, message: 'Registration confirmed' });
+    }
+    if (path.match(/^\/api\/v1\/events\/([^/]+)\/registrations$/) && method === 'GET') {
+      const evtId = path.split('/')[4];
+      const regs = EVENT_REGISTRATIONS.filter(r => r.event_id === evtId);
+      return sendJSON(res, 200, { success: true, data: regs });
+    }
+
+    // ---------------------------------------------------------
+    // CLASSROOMS & DIGITAL TWIN ROUTER
+    // ---------------------------------------------------------
+    if (path === '/api/v1/classrooms' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: CLASSROOMS });
+    }
+    if (path === '/api/v1/classrooms/digital-twin' && method === 'GET') {
+      const totalRooms = CLASSROOMS.length;
+      const occupiedRooms = CLASSROOMS.filter(r => r.status === 'occupied').length;
+      return sendJSON(res, 200, {
+        success: true,
+        data: {
+          totalRooms,
+          occupiedRooms,
+          availableRooms: totalRooms - occupiedRooms,
+          utilizationRate: Math.round((occupiedRooms / totalRooms) * 100),
+          totalPowerLoadKw: '20.4',
+          avgTemperatureC: '22.1',
+          classrooms: CLASSROOMS
+        }
+      });
+    }
+    if (path === '/api/v1/classrooms/book' && method === 'POST') {
+      const room = CLASSROOMS.find(r => r.id === payload.roomId || r.code === payload.roomCode);
+      if (room) room.status = 'reserved';
+      return sendJSON(res, 200, { success: true, message: `Room reserved successfully` });
+    }
+
+    // ---------------------------------------------------------
+    // COPILOT ROUTER
+    // ---------------------------------------------------------
+    if (path === '/api/v1/copilot/ask' && method === 'POST') {
+      const { query } = payload;
+      const q = (query || '').toLowerCase();
+      let answer = 'I am CampusFlow AI Support Copilot. How can I assist you?';
+      let chips = ['Check my attendance', 'Show upcoming hackathons'];
+      if (q.includes('attendance')) {
+        answer = 'Your overall attendance is 92.8% across 28 sessions, well above the 75% threshold.';
+        chips = ['View breakdown', 'File recovery ticket'];
+      } else if (q.includes('hackathon') || q.includes('event')) {
+        answer = 'Apex InnoHacks 2026 is published! ₹1.5L in cash prizes, team size 2-4. Registration deadline in 3 days.';
+        chips = ['Register for InnoHacks', 'View calendar'];
+      }
+      return sendJSON(res, 200, { success: true, data: { answer, suggestedFollowUps: chips } });
+    }
+
+    // ---------------------------------------------------------
+    // ORCHESTRATOR ROUTER
+    // ---------------------------------------------------------
+    if (path === '/api/v1/orchestrator/tasks' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: ORCHESTRATOR_TASKS });
+    }
+    if (path === '/api/v1/orchestrator/run-workflow' && method === 'POST') {
+      const newTask = {
+        id: 'orch-task-' + Date.now(),
+        title: 'Emergency Faculty Absence & Proxy Allocation',
+        trigger_event: 'Autonomous Orchestrator triggered simulation',
+        status: 'pending_approval',
+        requires_admin_approval: true,
+        urgency: 'high',
+        created_at: new Date().toISOString(),
+        agents_involved: ['Timetable Agent', 'Resource Agent', 'Notification Agent'],
+        summary: 'Schedule conflict detected. Alternative faculty Dr. Sarah Jenkins matched with Hall B-204.',
+        steps: [
+          { agent: 'Timetable Agent', action: 'Detected unstaffed session', status: 'completed' },
+          { agent: 'Resource Agent', action: 'Confirmed Hall B-204 is clear', status: 'completed' },
+          { agent: 'Autonomous Orchestrator', action: 'Presented optimal solution to admin queue', status: 'waiting_for_approval' }
+        ]
+      };
+      ORCHESTRATOR_TASKS.unshift(newTask);
+      return sendJSON(res, 201, { success: true, data: newTask, message: 'Workflow pipeline executed by Swarm!' });
+    }
+    if (path.match(/^\/api\/v1\/orchestrator\/tasks\/([^/]+)\/approve$/) && method === 'POST') {
+      const taskId = path.split('/')[4];
+      const task = ORCHESTRATOR_TASKS.find(t => t.id === taskId);
+      if (task) {
+        task.status = 'approved_and_executed';
+        task.requires_admin_approval = false;
+        task.admin_approval = { approved_by: 'Dr. Sarah Jenkins', approved_at: new Date().toISOString() };
+      }
+      return sendJSON(res, 200, { success: true, message: 'Action authorized. Autonomous execution completed!' });
+    }
+
+    // ---------------------------------------------------------
+    // LOST & FOUND ROUTER
+    // ---------------------------------------------------------
+    if (path === '/api/v1/lost-found' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: LOST_FOUND });
+    }
+    if (path === '/api/v1/lost-found' && method === 'POST') {
+      const newItem = {
+        id: 'lf-' + Date.now(),
+        ...payload,
+        reported_at: new Date().toISOString(),
+        status: payload.type === 'found' ? 'available_for_claim' : 'reported_lost'
+      };
+      LOST_FOUND.unshift(newItem);
+      return sendJSON(res, 201, { success: true, data: newItem, message: 'Item recorded' });
+    }
+
+    // ---------------------------------------------------------
+    // NOTICES ROUTER
+    // ---------------------------------------------------------
+    if (path === '/api/v1/notices' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: NOTICES });
+    }
+
+    // ---------------------------------------------------------
+    // GRIEVANCES ROUTER
+    // ---------------------------------------------------------
+    if (path === '/api/v1/grievances' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: GRIEVANCES });
+    }
+    if (path === '/api/v1/grievances' && method === 'POST') {
+      const newGrv = {
+        id: 'grv-' + Date.now(),
+        ticket_number: 'GRV-2026-' + Math.floor(100 + Math.random() * 900),
+        student_id: 'usr-student-01',
+        student_name: 'Alex Rivera',
+        ...payload,
+        department_assigned: 'Campus Facilities & IT Services',
+        status: 'submitted',
+        sla_hours: 48,
+        created_at: new Date().toISOString()
+      };
+      GRIEVANCES.unshift(newGrv);
+      return sendJSON(res, 201, { success: true, data: newGrv, message: 'Grievance registered' });
+    }
+
+    // ---------------------------------------------------------
+    // TIMETABLES & ASSIGNMENTS ROUTER
+    // ---------------------------------------------------------
+    if (path === '/api/v1/timetable/student' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: TIMETABLES });
+    }
+    if (path === '/api/v1/assignments/pending' && method === 'GET') {
+      return sendJSON(res, 200, { success: true, data: ASSIGNMENTS });
     }
 
     // Default 404
