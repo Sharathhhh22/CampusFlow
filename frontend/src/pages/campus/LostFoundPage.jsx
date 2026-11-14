@@ -105,14 +105,14 @@ export const LostFoundPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-amber-600 font-semibold text-xs tracking-wider uppercase mb-1">
+          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-semibold text-xs tracking-wider uppercase mb-1">
             <Compass className="w-4 h-4" />
             <span>Campus Asset Recovery</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
             Campus Lost & Found AI Intelligence
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             AI-driven semantic image matching and automated notification radar for misplaced belongings across campus.
           </p>
         </div>
@@ -126,15 +126,15 @@ export const LostFoundPage = () => {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row gap-3">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             placeholder="Search items (e.g. ThinkPad charger, calculator, keys)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="w-full pl-10 pr-4 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
         </div>
 
@@ -142,7 +142,7 @@ export const LostFoundPage = () => {
           <button
             onClick={() => setFilterType('all')}
             className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
-              filterType === 'all' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              filterType === 'all' ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
           >
             All Items
@@ -150,7 +150,7 @@ export const LostFoundPage = () => {
           <button
             onClick={() => setFilterType('lost')}
             className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
-              filterType === 'lost' ? 'bg-rose-600 text-white' : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
+              filterType === 'lost' ? 'bg-rose-600 text-white' : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 hover:bg-rose-100'
             }`}
           >
             Reported Lost
@@ -158,7 +158,7 @@ export const LostFoundPage = () => {
           <button
             onClick={() => setFilterType('found')}
             className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
-              filterType === 'found' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+              filterType === 'found' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100'
             }`}
           >
             Found & Available
@@ -174,10 +174,10 @@ export const LostFoundPage = () => {
           return (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition-all"
+              className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition-all"
             >
               <div>
-                <div className="h-44 bg-slate-100 relative overflow-hidden">
+                <div className="h-44 bg-slate-100 dark:bg-slate-800 relative overflow-hidden">
                   <img
                     src={item.image_url || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80'}
                     alt={item.title}
@@ -198,32 +198,32 @@ export const LostFoundPage = () => {
                 </div>
 
                 <div className="p-5 space-y-3">
-                  <h3 className="text-base font-bold text-slate-900 leading-snug">{item.title}</h3>
-                  <p className="text-xs text-slate-500 line-clamp-2">{item.description}</p>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white leading-snug">{item.title}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">{item.description}</p>
 
-                  <div className="space-y-1 text-xs text-slate-500 pt-2 border-t border-slate-100">
+                  <div className="space-y-1 text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                      <MapPin className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                       <span className="truncate">{item.location_found}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                      <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                       <span>{new Date(item.reported_at).toLocaleDateString()}</span>
                     </div>
                   </div>
 
                   {/* AI Match Badge */}
                   {isFound && (
-                    <div className="p-2.5 rounded-xl bg-amber-50/60 border border-amber-200/60 flex items-center gap-2 text-xs text-amber-800">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <div className="p-2.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/40 flex items-center gap-2 text-xs text-amber-800 dark:text-amber-300">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                       <span>AI auto-crossreferenced with campus security lost reports.</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] text-slate-500 font-medium">
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/60 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                   Reported by {item.reported_by}
                 </span>
                 {isFound && item.status === 'available_for_claim' && (
@@ -242,16 +242,16 @@ export const LostFoundPage = () => {
 
       {/* Report Modal */}
       {showReportModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h2 className="text-base font-bold text-slate-900">Report Campus Item</h2>
-              <button onClick={() => setShowReportModal(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">Report Campus Item</h2>
+              <button onClick={() => setShowReportModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
             </div>
 
             <form onSubmit={handleReportSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                   Report Category
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -259,7 +259,7 @@ export const LostFoundPage = () => {
                     type="button"
                     onClick={() => setFormData({ ...formData, type: 'lost' })}
                     className={`py-2 rounded-xl text-xs font-semibold border ${
-                      formData.type === 'lost' ? 'bg-rose-50 border-rose-300 text-rose-700' : 'bg-white border-slate-200 text-slate-600'
+                      formData.type === 'lost' ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-700 text-rose-700 dark:text-rose-300' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
                     }`}
                   >
                     I Lost an Item
@@ -268,7 +268,7 @@ export const LostFoundPage = () => {
                     type="button"
                     onClick={() => setFormData({ ...formData, type: 'found' })}
                     className={`py-2 rounded-xl text-xs font-semibold border ${
-                      formData.type === 'found' ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-white border-slate-200 text-slate-600'
+                      formData.type === 'found' ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
                     }`}
                   >
                     I Found an Item
@@ -277,7 +277,7 @@ export const LostFoundPage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                   Item Name / Title *
                 </label>
                 <input
@@ -286,12 +286,12 @@ export const LostFoundPage = () => {
                   placeholder="e.g. Blue Dell Laptop Charger or Scientific Calculator"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className="w-full px-3.5 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                   Campus Location *
                 </label>
                 <input
@@ -300,12 +300,12 @@ export const LostFoundPage = () => {
                   placeholder="e.g. Science Block B, 2nd Floor Corridor or Library Desk 12"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className="w-full px-3.5 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                   Description & Unique Identifiers
                 </label>
                 <textarea
@@ -313,7 +313,7 @@ export const LostFoundPage = () => {
                   placeholder="Include scratches, stickers, brand name, serial digits or distinctive markings..."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className="w-full px-3.5 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
                 />
               </div>
 
@@ -321,7 +321,7 @@ export const LostFoundPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowReportModal(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   Cancel
                 </button>
@@ -339,22 +339,22 @@ export const LostFoundPage = () => {
 
       {/* Claim Modal */}
       {selectedClaimItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h2 className="text-base font-bold text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">
                 Claim {selectedClaimItem.title}
               </h2>
-              <button onClick={() => setSelectedClaimItem(null)} className="text-slate-400 hover:text-slate-600">✕</button>
+              <button onClick={() => setSelectedClaimItem(null)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
             </div>
 
             <form onSubmit={handleClaimSubmit} className="space-y-4">
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 To prevent fraudulent claims, describe verifiable details not visible in photos (such as serial number, stickers, exact wallpaper, or purchase receipt).
               </p>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                   Proof of Ownership *
                 </label>
                 <textarea
@@ -363,7 +363,7 @@ export const LostFoundPage = () => {
                   placeholder="e.g. My student ID number is written on the bottom sticker..."
                   value={claimProof}
                   onChange={(e) => setClaimProof(e.target.value)}
-                  className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className="w-full px-3.5 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
 
@@ -371,7 +371,7 @@ export const LostFoundPage = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedClaimItem(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   Cancel
                 </button>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { AppLayout } from './layouts/AppLayout';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
@@ -57,8 +58,9 @@ import { AutonomousOrchestratorPage } from './pages/admin/AutonomousOrchestrator
 
 export function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
@@ -124,6 +126,7 @@ export function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
 

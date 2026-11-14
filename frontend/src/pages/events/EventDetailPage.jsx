@@ -100,15 +100,15 @@ export const EventDetailPage = () => {
   };
 
   if (loading) {
-    return <div className="p-12 text-center text-slate-500 text-xs">Loading event specifications...</div>;
+    return <div className="p-12 text-center text-slate-500 dark:text-slate-400 text-xs">Loading event specifications...</div>;
   }
 
   if (!event) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-12 text-center space-y-4">
         <AlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
-        <h2 className="text-lg font-bold text-slate-900">Event Not Found</h2>
-        <Link to="/student/events" className="text-xs font-bold text-indigo-600">Back to Events Hub</Link>
+        <h2 className="text-lg font-bold text-slate-900 dark:text-white">Event Not Found</h2>
+        <Link to="/student/events" className="text-xs font-bold text-sky-600 dark:text-sky-400">Back to Events Hub</Link>
       </div>
     );
   }
@@ -122,7 +122,7 @@ export const EventDetailPage = () => {
       <div>
         <Link
           to="/student/events"
-          className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-slate-900 transition gap-1.5"
+          className="inline-flex items-center text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition gap-1.5"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Opportunities</span>
@@ -130,9 +130,9 @@ export const EventDetailPage = () => {
       </div>
 
       {/* Hero Banner */}
-      <div className="relative rounded-3xl overflow-hidden shadow-lg bg-slate-900 h-64 md:h-80">
+      <div className="relative rounded-3xl overflow-hidden shadow-lg bg-slate-900 h-64 md:h-80 border border-slate-200 dark:border-slate-800">
         <img
-          src={event.banner_url || 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&auto=format&fit=crop&q=80'}
+          src={event.banner_url || event.cover_image || 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&auto=format&fit=crop&q=80'}
           alt={event.title}
           className="w-full h-full object-cover opacity-60"
         />
@@ -140,14 +140,14 @@ export const EventDetailPage = () => {
         
         <div className="absolute bottom-6 left-6 right-6 text-white space-y-2">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-lg bg-indigo-600 text-white shadow">
-              {event.category.replace(/_/g, ' ')}
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-lg bg-sky-600 text-white shadow">
+              {(event.category || 'event').replace(/_/g, ' ')}
             </span>
             <span className="text-[10px] capitalize font-semibold px-2 py-1 rounded-lg bg-white/20 backdrop-blur">
               {event.mode} Mode
             </span>
             <span className="text-[10px] font-bold px-2 py-1 rounded-lg bg-emerald-600 text-white">
-              {event.is_free ? 'FREE REGISTRATION' : `₹${event.price}`}
+              {event.is_free ? 'FREE REGISTRATION' : `₹${event.price || 0}`}
             </span>
           </div>
 
@@ -168,24 +168,24 @@ export const EventDetailPage = () => {
         <div className="lg:col-span-2 space-y-6">
           
           {/* Overview Card */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
-            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-indigo-600" />
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-4">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-sky-600 dark:text-sky-400" />
               <span>Event Overview & Objectives</span>
             </h2>
-            <div className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
+            <div className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
               {event.description}
             </div>
           </div>
 
           {/* Rules and Guidelines */}
           {event.rules && (
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-3">
-              <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-3">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 <span>Participation Rules & Guidelines</span>
               </h2>
-              <div className="text-xs text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50 p-4 rounded-xl border border-slate-200/60 font-mono text-[11px]">
+              <div className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200/60 dark:border-slate-700/60 font-mono text-[11px]">
                 {event.rules}
               </div>
             </div>
@@ -193,49 +193,49 @@ export const EventDetailPage = () => {
 
           {/* Prizes & Incentives */}
           {event.prizes && (
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/80 rounded-2xl p-6 shadow-sm space-y-3">
-              <h2 className="text-base font-bold text-amber-950 flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-amber-600" />
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/10 border border-amber-200/80 dark:border-amber-800/40 rounded-2xl p-6 shadow-sm space-y-3">
+              <h2 className="text-base font-bold text-amber-950 dark:text-amber-300 flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 <span>Prizes & Awards</span>
               </h2>
-              <div className="text-xs text-amber-900 leading-relaxed whitespace-pre-line font-medium">
+              <div className="text-xs text-amber-900 dark:text-amber-200 leading-relaxed whitespace-pre-line font-medium">
                 {event.prizes}
               </div>
             </div>
           )}
 
           {/* Eligibility & Team Configuration */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
-            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-4">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
               Eligibility & Format
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/60">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Participation Format</span>
-                <span className="font-bold text-slate-800">
-                  {isTeamEvent ? `Team Event (${event.team_size_min} - ${event.team_size_max} Members)` : 'Individual Participation'}
+              <div className="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+                <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 block mb-1">Participation Format</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200">
+                  {isTeamEvent ? `Team Event (${event.team_size_min || 2} - ${event.team_size_max || 4} Members)` : 'Individual Participation'}
                 </span>
               </div>
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/60">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Eligible Batches</span>
-                <span className="font-bold text-slate-800">{event.eligibility || 'All Department Batches Eligible'}</span>
+              <div className="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+                <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 block mb-1">Eligible Batches</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200">{event.eligibility || 'All Department Batches Eligible'}</span>
               </div>
             </div>
           </div>
 
           {/* Coordinators */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-3">
-            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-3">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
               Organizing Committee & Contacts
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <span className="text-slate-400 block text-[11px]">Faculty Coordinator</span>
-                <span className="font-bold text-slate-800 text-sm">{event.faculty_coordinator || 'Prof. Marcus Vance'}</span>
+                <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Faculty Coordinator</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">{event.faculty_coordinator || 'Prof. Marcus Vance'}</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[11px]">Student Lead</span>
-                <span className="font-bold text-slate-800 text-sm">{event.student_coordinator || 'Jordan Lee'}</span>
+                <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Student Lead</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">{event.student_coordinator || 'Jordan Lee'}</span>
               </div>
             </div>
           </div>
@@ -245,67 +245,67 @@ export const EventDetailPage = () => {
         {/* Right Column (1 Col): Registration Card & Timelines */}
         <div className="space-y-6">
           
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-5 sticky top-20">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-5 sticky top-20">
             <div className="space-y-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Status</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Status</span>
               <div className="flex items-center justify-between">
-                <span className="text-lg font-black text-slate-900">
-                  {event.is_free ? 'Free Registration' : `₹${event.price}`}
+                <span className="text-lg font-black text-slate-900 dark:text-white">
+                  {event.is_free ? 'Free Registration' : `₹${event.price || 0}`}
                 </span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">
+                <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
                   Open
                 </span>
               </div>
             </div>
 
             {/* Quick Specs */}
-            <div className="space-y-3 pt-4 border-t border-slate-100 text-xs">
-              <div className="flex items-start gap-2.5 text-slate-600">
-                <Calendar className="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0" />
+            <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
+              <div className="flex items-start gap-2.5 text-slate-600 dark:text-slate-300">
+                <Calendar className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 flex-shrink-0" />
                 <div>
-                  <span className="font-bold text-slate-800 block">Event Date</span>
-                  <span>{new Date(event.event_date || event.eventDate).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200 block">Event Date</span>
+                  <span>{new Date(event.event_date || event.eventDate || event.start_date || Date.now()).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 text-slate-600">
-                <Clock className="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0" />
+              <div className="flex items-start gap-2.5 text-slate-600 dark:text-slate-300">
+                <Clock className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 flex-shrink-0" />
                 <div>
-                  <span className="font-bold text-slate-800 block">Registration Deadline</span>
-                  <span className="text-rose-600 font-medium">
-                    {new Date(event.registration_deadline || event.registrationDeadline).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                  <span className="font-bold text-slate-800 dark:text-slate-200 block">Registration Deadline</span>
+                  <span className="text-rose-600 dark:text-rose-400 font-medium">
+                    {new Date(event.registration_deadline || event.registrationDeadline || Date.now() + 86400000).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 text-slate-600">
-                <MapPin className="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0" />
+              <div className="flex items-start gap-2.5 text-slate-600 dark:text-slate-300">
+                <MapPin className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 flex-shrink-0" />
                 <div>
-                  <span className="font-bold text-slate-800 block">Venue</span>
-                  <span>{event.venue}</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200 block">Venue</span>
+                  <span>{event.venue || 'Campus Auditorium'}</span>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 text-slate-600">
-                <Users className="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0" />
+              <div className="flex items-start gap-2.5 text-slate-600 dark:text-slate-300">
+                <Users className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 flex-shrink-0" />
                 <div>
-                  <span className="font-bold text-slate-800 block">Seats Remaining</span>
-                  <span>{Math.max(0, event.max_capacity - event.registered_count)} of {event.max_capacity} remaining</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200 block">Seats Remaining</span>
+                  <span>{Math.max(0, (event.max_capacity || event.capacity || 100) - (event.registered_count || 0))} of {event.max_capacity || event.capacity || 100} remaining</span>
                 </div>
               </div>
             </div>
 
             {/* Registration Action */}
-            <div className="pt-4 border-t border-slate-100">
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
               {registered ? (
-                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-900 text-xs text-center font-bold flex items-center justify-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 text-xs text-center font-bold flex items-center justify-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   <span>You are Registered for this Event!</span>
                 </div>
               ) : (
                 <button
                   onClick={() => setShowRegisterModal(true)}
-                  className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-200 transition flex items-center justify-center gap-1.5"
+                  className="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold shadow-md shadow-sky-200 dark:shadow-none transition flex items-center justify-center gap-1.5"
                 >
                   <Award className="w-4 h-4" />
                   <span>{isTeamEvent ? 'Register as Team' : 'Register Now'}</span>
@@ -313,7 +313,7 @@ export const EventDetailPage = () => {
               )}
             </div>
 
-            <p className="text-[10px] text-slate-400 text-center">
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center">
               Verified registrations earn an official institutional attendance exemption record during event hours.
             </p>
           </div>
@@ -324,18 +324,18 @@ export const EventDetailPage = () => {
 
       {/* Registration Modal */}
       {showRegisterModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-100 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-100 dark:border-slate-800 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>
-                <h3 className="font-bold text-slate-900 text-base">
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">
                   {isTeamEvent ? 'Team Event Registration' : 'Individual Event Registration'}
                 </h3>
-                <p className="text-xs text-slate-500">{event.title}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{event.title}</p>
               </div>
               <button
                 onClick={() => setShowRegisterModal(false)}
-                className="text-slate-400 hover:text-slate-600 text-lg"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg"
               >
                 &times;
               </button>
@@ -344,17 +344,17 @@ export const EventDetailPage = () => {
             <form onSubmit={handleRegisterSubmit} className="space-y-4">
               
               {/* Primary Leader Info */}
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60 text-xs space-y-1">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Registrant / Team Leader</span>
-                <div className="font-bold text-slate-900">{user?.name || user?.full_name}</div>
-                <div className="text-slate-500">{user?.email} • {user?.reg_number || '21BCE1042'}</div>
+              <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200/60 dark:border-slate-700/60 text-xs space-y-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 block">Registrant / Team Leader</span>
+                <div className="font-bold text-slate-900 dark:text-white">{user?.name || user?.full_name}</div>
+                <div className="text-slate-500 dark:text-slate-400">{user?.email} • {user?.reg_number || '21BCE1042'}</div>
               </div>
 
               {/* If Team Event: Team Name & Teammates */}
               {isTeamEvent && (
                 <div className="space-y-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                       Team Name *
                     </label>
                     <input
@@ -363,20 +363,20 @@ export const EventDetailPage = () => {
                       placeholder="e.g. Neural Pioneers"
                       value={teamName}
                       onChange={(e) => setTeamName(e.target.value)}
-                      className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-slate-700">
-                        Teammates (Up to {event.team_size_max - 1} additional members)
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Teammates (Up to {(event.team_size_max || 4) - 1} additional members)
                       </label>
-                      {teammates.length < event.team_size_max - 1 && (
+                      {teammates.length < (event.team_size_max || 4) - 1 && (
                         <button
                           type="button"
                           onClick={handleAddTeammate}
-                          className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+                          className="text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:text-sky-800 flex items-center gap-1"
                         >
                           <Plus className="w-3.5 h-3.5" />
                           <span>Add Teammate</span>
@@ -391,7 +391,7 @@ export const EventDetailPage = () => {
                           placeholder={`Teammate #${idx + 1} Reg Number or Email`}
                           value={mate}
                           onChange={(e) => handleTeammateChange(idx, e.target.value)}
-                          className="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
                         />
                         {teammates.length > 1 && (
                           <button
@@ -412,14 +412,14 @@ export const EventDetailPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowRegisterModal(false)}
-                  className="px-4 py-2 border border-slate-200 text-slate-600 text-xs font-medium rounded-xl hover:bg-slate-50"
+                  className="px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition disabled:opacity-50"
+                  className="px-5 py-2 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-xl shadow-sm transition disabled:opacity-50"
                 >
                   {submitting ? 'Confirming...' : 'Confirm Registration'}
                 </button>
@@ -432,7 +432,7 @@ export const EventDetailPage = () => {
 
       {/* Floating Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-slate-900 text-white rounded-xl shadow-xl text-xs font-medium flex items-center gap-2">
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl shadow-xl text-xs font-medium flex items-center gap-2 border border-slate-700">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>

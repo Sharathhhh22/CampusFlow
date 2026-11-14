@@ -3,6 +3,12 @@ import axios from 'axios';
 // Base API configuration
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1';
 
+// Detect if running in cloud (e.g. Vercel) with no reachable localhost backend
+const isCloudWithoutBackend = typeof window !== 'undefined' && 
+  (window.location.hostname.includes('vercel.app') || 
+   (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')) && 
+  API_BASE_URL.includes('localhost');
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -381,16 +387,20 @@ function saveStore(store) {
 
 // Helper to safely execute API call with transparent client fallback if offline or backend is unreachable
 async function withFallback(apiCall, fallbackFn) {
+  // If running in cloud (Vercel) without a live backend, skip direct network timeout immediately
+  if (isCloudWithoutBackend) {
+    return await fallbackFn();
+  }
   try {
     const res = await apiCall();
     return res;
   } catch (err) {
-    const isNetworkOrNotFound = !err.response || err.code === 'ERR_NETWORK' || err.code === 'ECONNREFUSED' || err.response?.status === 404 || err.message?.includes('Network Error');
-    if (isNetworkOrNotFound) {
-      console.info('ℹ️ Running in resilient client mode (Cloud/Offline Adapter):', err.message);
+    console.info('ℹ️ Running in resilient client mode (Cloud/Offline Adapter):', err.message);
+    try {
       return await fallbackFn();
+    } catch (fallbackErr) {
+      throw fallbackErr;
     }
-    throw err;
   }
 }
 
@@ -405,13 +415,18 @@ export const authApi = {
       const store = getStore();
       const existing = store.users.find(u => u.email.toLowerCase() === data.email.toLowerCase());
       if (existing) {
-        throw new Error('An account with this email address already exists.');
+        const token = 'demo-jwt-student-' + existing.id;
+        return {
+          success: true,
+          message: 'Account signed in successfully',
+          data: { profile: existing, token }
+        };
       }
       const newUser = {
         id: 'usr-' + Date.now(),
         role: 'student',
-        full_name: data.full_name,
-        name: data.full_name,
+        full_name: data.full_name || 'Student',
+        name: data.full_name || 'Student',
         email: data.email,
         reg_number: '21BCE' + Math.floor(1000 + Math.random() * 9000),
         department: 'Computer Science & Engineering',
@@ -436,7 +451,7 @@ export const authApi = {
       if (!user) {
         const role = data.email.includes('faculty') ? 'faculty' :
                      data.email.includes('admin') ? 'admin' : 'student';
-        const namePart = data.email.split('@')[0].replace(/[._]/g, ' ');
+        const namePart = (data.email.split('@')[0] || 'User').replace(/[._]/g, ' ');
         const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
         user = {
           id: 'usr-' + Date.now(),
@@ -464,6 +479,12 @@ export const authApi = {
     () => api.get('/auth/me').then(r => r.data),
     () => {
       const store = getStore();
+      const savedUserStr = localStorage.getItem('campusflow_user');
+      if (savedUserStr) {
+        try {
+          return { success: true, data: JSON.parse(savedUserStr) };
+        } catch (e) {}
+      }
       const currentRole = localStorage.getItem('campusflow_role') || 'student';
       const user = store.users.find(u => u.role === currentRole) || store.users[0];
       return { success: true, data: user };

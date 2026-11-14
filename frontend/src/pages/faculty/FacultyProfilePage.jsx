@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { authApi } from '../../services/api';
-import { User, Mail, School, Building2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ThemeSegmentedControl } from '../../contexts/ThemeContext';
+import { User, Mail, School, Building2, CheckCircle2, AlertCircle, Palette } from 'lucide-react';
 
 export const FacultyProfilePage = () => {
   const { user } = useAuth();
@@ -30,75 +31,93 @@ export const FacultyProfilePage = () => {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Faculty Profile</h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Review your academic assignments and faculty credentials.
+      {/* Title */}
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs transition-colors duration-150">
+        <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Faculty Profile</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Review academic assignments, credentials, and configure visual display preferences.
         </p>
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+      {/* Appearance & Theme Mode Section */}
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3 transition-colors duration-150">
+        <div className="flex items-center gap-2">
+          <Palette className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+          <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+            Appearance & Display Theme
+          </h2>
+        </div>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Customize CampusFlow's appearance on this device. Choose between Light, Dark, or System synchronization.
+        </p>
+        <div className="pt-1 max-w-sm">
+          <ThemeSegmentedControl />
+        </div>
+      </div>
+
+      {/* Form */}
+      <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-6 transition-colors duration-150">
         {success && (
-          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+          <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             Profile updated successfully.
           </div>
         )}
 
         {error && (
-          <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600" />
+          <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-xl text-xs text-rose-800 dark:text-rose-300 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
               Faculty Name
             </label>
             <div className="relative">
-              <User className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
+              <User className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-3 pointer-events-none" />
               <input
                 type="text"
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full pl-9 pr-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
               Faculty Email
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
+              <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-3 pointer-events-none" />
               <input
                 type="email"
                 disabled
                 value={user?.email || ''}
-                className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50 text-slate-500 cursor-not-allowed font-mono"
+                className="w-full pl-9 pr-3 py-2 border border-slate-200 dark:border-slate-800 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 cursor-not-allowed font-mono"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
-              <span className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+              <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                 Department
               </span>
-              <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700">
-                {user?.department_name || 'Computer Science and Engineering'}
+              <div className="p-2.5 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300">
+                {user?.department || user?.department_name || 'Computer Science & Engineering'}
               </div>
             </div>
 
             <div>
-              <span className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+              <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
                 Institutional Role
               </span>
-              <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 capitalize">
+              <div className="p-2.5 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 capitalize">
                 {user?.role || 'faculty'}
               </div>
             </div>
@@ -107,7 +126,7 @@ export const FacultyProfilePage = () => {
           <button
             type="submit"
             disabled={saving}
-            className="mt-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition shadow-xs"
+            className="mt-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition shadow-xs"
           >
             {saving ? 'Saving...' : 'Save Profile Changes'}
           </button>
@@ -116,4 +135,3 @@ export const FacultyProfilePage = () => {
     </div>
   );
 };
-

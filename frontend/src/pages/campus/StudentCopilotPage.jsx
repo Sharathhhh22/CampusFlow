@@ -91,23 +91,23 @@ export const StudentCopilotPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2 text-indigo-600 font-semibold text-xs tracking-wider uppercase mb-1">
+          <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-xs tracking-wider uppercase mb-1">
             <Sparkles className="w-4 h-4" />
             <span>Autonomous Multi-Agent Copilot</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
             Student Academic & Operational Copilot
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Context-aware conversational assistance for attendance compliance, timetables, assignments, and campus events.
           </p>
         </div>
       </div>
 
       {/* Main Chat Box */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm flex flex-col h-[650px] overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col h-[650px] overflow-hidden transition-colors duration-150">
         {/* Chat Messages Log */}
-        <div className="flex-1 p-6 overflow-y-auto space-y-5 bg-slate-50/30">
+        <div className="flex-1 p-6 overflow-y-auto space-y-5 bg-slate-50/30 dark:bg-slate-950/40">
           {messages.map((msg) => {
             const isUser = msg.sender === 'user';
 
@@ -117,7 +117,7 @@ export const StudentCopilotPage = () => {
                 className={`flex gap-3 max-w-[85%] ${isUser ? 'ml-auto flex-row-reverse' : 'mr-auto'}`}
               >
                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
-                  isUser ? 'bg-sky-600 text-white' : 'bg-slate-900 text-indigo-400'
+                  isUser ? 'bg-sky-600 text-white' : 'bg-slate-900 dark:bg-slate-800 text-indigo-400'
                 }`}>
                   {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                 </div>
@@ -126,7 +126,7 @@ export const StudentCopilotPage = () => {
                   <div className={`p-4 rounded-2xl text-sm leading-relaxed ${
                     isUser
                       ? 'bg-sky-600 text-white rounded-tr-none shadow-sm'
-                      : 'bg-white border border-slate-200/80 text-slate-800 rounded-tl-none shadow-sm'
+                      : 'bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none shadow-sm'
                   }`}>
                     <div className="whitespace-pre-line">{msg.text}</div>
                   </div>
@@ -138,9 +138,9 @@ export const StudentCopilotPage = () => {
                         <button
                           key={idx}
                           onClick={() => handleSend(chip)}
-                          className="px-3 py-1.5 rounded-full text-xs font-medium bg-white border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 text-slate-700 transition-all flex items-center gap-1.5 shadow-2xs"
+                          className="px-3 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/40 text-slate-700 dark:text-slate-300 transition-all flex items-center gap-1.5 shadow-2xs"
                         >
-                          <Sparkles className="w-3 h-3 text-indigo-500" />
+                          <Sparkles className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
                           <span>{chip}</span>
                         </button>
                       ))}
@@ -153,10 +153,10 @@ export const StudentCopilotPage = () => {
 
           {isTyping && (
             <div className="flex gap-3 max-w-[80%] mr-auto items-center">
-              <div className="w-8 h-8 rounded-xl bg-slate-900 text-indigo-400 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-slate-900 dark:bg-slate-800 text-indigo-400 flex items-center justify-center shrink-0">
                 <Bot className="w-4 h-4" />
               </div>
-              <div className="p-3 bg-white border border-slate-200 rounded-2xl rounded-tl-none text-xs text-slate-500 flex items-center gap-2">
+              <div className="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl rounded-tl-none text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
                 <span>Copilot is reasoning over your academic records...</span>
               </div>
@@ -167,7 +167,7 @@ export const StudentCopilotPage = () => {
         </div>
 
         {/* Input Bar */}
-        <div className="p-4 bg-white border-t border-slate-100">
+        <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 transition-colors duration-150">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -180,7 +180,7 @@ export const StudentCopilotPage = () => {
               placeholder="Ask anything (e.g. 'What's my attendance in CS-301?', 'When is my next hackathon?')..."
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
-              className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+              className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 transition-all"
             />
             <button
               type="submit"
@@ -188,7 +188,7 @@ export const StudentCopilotPage = () => {
               className={`p-3 rounded-xl transition-all ${
                 inputQuery.trim() && !isTyping
                   ? 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-500/20'
-                  : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
               }`}
             >
               <Send className="w-4 h-4" />
