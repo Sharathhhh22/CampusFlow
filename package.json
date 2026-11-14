@@ -5,7 +5,9 @@
   "private": true,
   "description": "CampusFlow — Agentic AI Attendance Trust & Recovery Platform",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
+    "start": "npm --prefix backend start",
+    "build": "npm --prefix backend install",
+    "postinstall": "npm --prefix backend install",
     "dev:backend": "npm --prefix backend run dev",
     "dev:frontend": "npm --prefix frontend run dev",
     "build:frontend": "npm --prefix frontend run build",
