@@ -245,3 +245,4 @@ export const FloatingCopilotWidget = () => {
 };
 
 export default FloatingCopilotWidget;
+

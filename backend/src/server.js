@@ -12,7 +12,22 @@ const app = express();
 // Security Middleware
 app.use(helmet());
 app.use(cors({
-  origin: env.FRONTEND_URL ? [env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000'] : '*',
+  origin: (origin, callback) => {
+    // Allow non-browser requests or any origin in dev/preview
+    if (!origin) return callback(null, true);
+    if (!env.FRONTEND_URL || env.FRONTEND_URL === '*') return callback(null, true);
+
+    const configured = env.FRONTEND_URL.split(',').map(s => s.trim().replace(/\/$/, ''));
+    if (
+      configured.includes(origin) ||
+      origin.endsWith('.vercel.app') ||
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1')
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
